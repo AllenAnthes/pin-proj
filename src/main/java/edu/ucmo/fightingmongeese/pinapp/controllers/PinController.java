@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Temporary Controller for the Thymeleaf based front-end
+ * Will most likely be removed before prod
+ */
 @Controller
 public class PinController {
 

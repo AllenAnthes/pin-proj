@@ -13,11 +13,6 @@ public class Pin {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer oid;
-//
-//    @NotEmpty
-//    @Column(name = "oid", nullable = false)
-//    @GeneratedValue(strategy = GenerationType.AUTO)
-//    private Long oid;
 
     @NotEmpty
     @Column(name = "account", nullable = false)
@@ -35,17 +30,10 @@ public class Pin {
     @Column(name = "create_user", nullable = false)
     private String create_user;
 
-//    @NotEmpty
+    @CreationTimestamp
     @Column(name = "create_timestamp",
             columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", updatable = false)
-    @CreationTimestamp
     private Timestamp create_timestamp;
-//
-//
-//    @Column(name = "expire_timestamp",
-//            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP")
-////    @Temporal(TemporalType.TIMESTAMP)
-//    private Timestamp expire_timestamp;
 
     @Column(name = "expire_timestamp",
             columnDefinition = "TIMESTAMP NULL DEFAULT NULL")

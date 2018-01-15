@@ -28,6 +28,7 @@
             <th class="">Claim User</th>
             <th class="">Claim IP</th>
             <th class="">Edit</th>
+            <th class="">Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -38,12 +39,15 @@
             <td class="" th:text="${pin.create_user}"></td>
             <td class="" th:text="${pin.create_ip}"></td>
             <td class="" th:text="${pin.create_timestamp}"></td>
-            <td class="" th:text="${pin.create_timestamp}"></td>
-            <td class=""></td>
-            <td class=""></td>
+            <td class="" th:text="${pin.expire_timestamp}"></td>
+            <td class="" th:text="${pin.claim_user}"></td>
+            <td class="" th:text="${pin.claim_ip}"></td>
             <td style="text-align:center;">
                 <!--<button class="btn btn-success" id="editBtn" contenteditable="false">Edit</button>-->
                 <a class="btn btn-success" href="#" type="button" data-toggle="modal" data-target="#editModal">Edit</a>
+            </td>
+            <td style="text-align:center;">
+                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/delete/' + ${pin.oid}}">Delete</a>
             </td>
         </tr>
         </tbody>
