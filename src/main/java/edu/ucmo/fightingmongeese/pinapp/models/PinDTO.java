@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Entity
@@ -17,12 +18,12 @@ public class PinDTO {
     private String account;
 
     @Column
-    @DateTimeFormat(pattern = "yyyy-mm-dd")
-    private Date expire_timestamp;
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date expire_date;
 
     @Column
-    @DateTimeFormat(pattern = "hh:mm:ss")
-    private Date expire_time;
+    @DateTimeFormat(pattern = "HH:mm:ss")
+    private LocalTime expire_time;
 
 
     public PinDTO() {
@@ -44,19 +45,19 @@ public class PinDTO {
         this.account = account;
     }
 
-    public Date getExpire_timestamp() {
-        return expire_timestamp;
+    public Date getExpire_date() {
+        return expire_date;
     }
 
-    public void setExpire_timestamp(Date expire_timestamp) {
-        this.expire_timestamp = expire_timestamp;
+    public void setExpire_date(Date expire_date) {
+        this.expire_date = expire_date;
     }
 
-    public Date getExpire_time() {
+    public LocalTime getExpire_time() {
         return expire_time;
     }
 
-    public void setExpire_time(Date expire_time) {
+    public void setExpire_time(LocalTime expire_time) {
         this.expire_time = expire_time;
     }
 }

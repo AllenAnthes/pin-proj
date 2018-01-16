@@ -18,7 +18,11 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.TemporalAmount;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +59,10 @@ public class PinController {
         payload.put("create_user", request.getUserPrincipal().getName());
 
 
-        if (pin.getExpire_timestamp() != null && pin.getExpire_time() != null) {
-            payload.put("expire_timestamp", String.valueOf(pin.getExpire_timestamp().getTime() + pin.getExpire_time().getTime()));
-        } else if (pin.getExpire_time() != null) {
-            payload.put("expire_timestamp", String.valueOf(pin.getExpire_timestamp().getTime()));
+        if (pin.getExpire_date() != null && pin.getExpire_time() != null) {
+            payload.put("expire_timestamp", String.valueOf(pin.getExpire_date().getTime() + pin.getExpire_time().toSecondOfDay() * 1000));
+        } else if (pin.getExpire_date() != null) {
+            payload.put("expire_timestamp", String.valueOf(pin.getExpire_date().getTime()));
         }
 
         this.getRESTResponse(url, payload);
@@ -73,7 +77,11 @@ public class PinController {
         List<Pin> pins = pinRepository.findAll();
         model.addAttribute("pins", pins);
         PinDTO pin = new PinDTO();
-        pin.setExpire_timestamp(Timestamp.valueOf(LocalDateTime.now().plusDays(2)));
+        pin.setExpire_date(Date.from(Instant.now().plusSeconds(172800)));
+//        pin.setExpire_time(Date.from(Instant.EPOCH.plusSeconds(LocalTime.now().getSecond())));
+        pin.setExpire_time(LocalTime.now());
+
+
         model.addAttribute("pin", pin);
 
         return "pin-table";
@@ -130,5 +138,4 @@ public class PinController {
         logger.info(response);
         return response;
     }
-
 }

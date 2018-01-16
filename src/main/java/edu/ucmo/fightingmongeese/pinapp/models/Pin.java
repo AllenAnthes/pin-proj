@@ -38,7 +38,7 @@ public class Pin {
 
 
     @Column(name = "expire_timestamp")
-    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
+    @DateTimeFormat(pattern = "yyyy-mm-dd HH:mm:ss")
     private Timestamp expire_timestamp;
 
 
