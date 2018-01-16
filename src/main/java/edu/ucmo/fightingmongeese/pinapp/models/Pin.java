@@ -2,6 +2,7 @@ package edu.ucmo.fightingmongeese.pinapp.models;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -37,6 +38,7 @@ public class Pin {
 
     @Column(name = "expire_timestamp",
             columnDefinition = "TIMESTAMP NULL DEFAULT NULL")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private Timestamp expire_timestamp;
 
 

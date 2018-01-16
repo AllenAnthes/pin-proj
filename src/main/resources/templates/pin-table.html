@@ -5,10 +5,13 @@
 <head>
     <title>home</title>
     <div th:replace="fragments/header :: header-css"></div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/css/bootstrap-datetimepicker.css"
+          th:href="@{/webjars/bootstrap-datetimepicker/}"/>
+
 </head>
 
 <body>
-<div th:replace="fragments/editModal :: editModal" id="editModal">...</div>
+<div th:replace="fragments/newModal :: newModal" id="newModal">...</div>
 
 <div th:replace="fragments/header :: header">...</div>
 
@@ -43,8 +46,7 @@
             <td class="" th:text="${pin.claim_user}"></td>
             <td class="" th:text="${pin.claim_ip}"></td>
             <td style="text-align:center;">
-                <!--<button class="btn btn-success" id="editBtn" contenteditable="false">Edit</button>-->
-                <a class="btn btn-success" href="#" type="button" data-toggle="modal" data-target="#editModal">Edit</a>
+                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/claim/' + ${pin.account} + '/' + ${pin.pin} + '/' + ${#authentication.getPrincipal().getUsername()}}">Claim</a>
             </td>
             <td style="text-align:center;">
                 <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/delete/' + ${pin.oid}}">Delete</a>
@@ -52,12 +54,13 @@
         </tr>
         </tbody>
     </table>
+    <p><a class="btn btn-secondary" href="#" type="button" data-toggle="modal" data-target="#newModal">New PIN &raquo;</a></p>
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
+<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>-->
+<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>-->
 
 <div th:replace="fragments/footer :: footer"></div>
 

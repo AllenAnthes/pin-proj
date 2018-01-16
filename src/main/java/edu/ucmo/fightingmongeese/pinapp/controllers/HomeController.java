@@ -9,7 +9,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        return "home";
+//        return "home";
+        return "redirect:/pins/list";
     }
 
     @GetMapping("/login")

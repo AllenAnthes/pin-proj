@@ -13,14 +13,14 @@
         <h1>Admin page (Spring Security protected)</h1>
 
         <h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+        <h1 th:inline="text">You're allowed to be here!</h1>
         <form th:action="@{/logout}" method="post">
-            <input type="submit" value="Sign Out"/>
+            <input class="btn btn-primary" type="submit" value="Sign Out"/>
         </form>
 
     </div>
 
 </div>
-<!-- /.container -->
 
 <div th:replace="fragments/footer :: footer"></div>
 
