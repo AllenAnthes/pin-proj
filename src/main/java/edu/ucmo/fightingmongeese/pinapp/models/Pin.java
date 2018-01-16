@@ -31,21 +31,10 @@ public class Pin {
     @Column(name = "create_user", nullable = false)
     private String create_user;
 
-//    @CreationTimestamp
-//    @Column(name = "create_timestamp",
-//            columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP", updatable = false)
-//    private Timestamp create_timestamp;
 
     @CreationTimestamp
     @Column(name = "create_timestamp", updatable = false)
     private Timestamp create_timestamp;
-
-
-//
-//    @Column(name = "expire_timestamp",
-//            columnDefinition = "TIMESTAMP NULL DEFAULT NULL")
-////    @DateTimeFormat(pattern = "yyyy-mm-dd hh:mm:ss")
-//    private Timestamp expire_timestamp;
 
 
     @Column(name = "expire_timestamp")
@@ -53,14 +42,8 @@ public class Pin {
     private Timestamp expire_timestamp;
 
 
-
     @Column(name = "claim_timestamp")
     private Timestamp claim_timestamp;
-
-//    @Column(name = "claim_timestamp",
-//            columnDefinition = "TIMESTAMP NULL DEFAULT NULL")
-//    private Timestamp claim_timestamp;
-//
 
     @Column(name = "claim_user")
     private String claim_user;
@@ -68,7 +51,8 @@ public class Pin {
     @Column(name = "claim_ip")
     private String claim_ip;
 
-    public Pin() {}
+    public Pin() {
+    }
 
     public Pin(String account, String pin, String create_ip, String create_user, Timestamp create_timestamp, String claim_user, String claim_ip) {
         this.account = account;

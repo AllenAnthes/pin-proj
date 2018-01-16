@@ -15,11 +15,11 @@
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbar">
-        <ul class="navbar-nav mr-auto">
-            <li>
-                <a class="nav-link active" href="" th:href="@{/}">Home<span class="sr-only">(current)</span></a>
+        <ul class="navbar-nav mr-auto" th:with="view=${#httpServletRequest.getServletPath()}">
+            <li th:classappend="${#strings.startsWith(view,'/home')? 'active' : ''}">
+                <a class="nav-link" href="" th:href="@{/}">Home<span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item" th:classappend="${#strings.startsWith(view,'/pins/list')? 'active' : ''}">
                 <a class="nav-link" href="" th:href="@{/pins/list}">Pin Table</a>
             </li>
         </ul>

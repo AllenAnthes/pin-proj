@@ -3,7 +3,7 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <title>home</title>
+    <title>Temp PIN Table</title>
     <div th:replace="fragments/header :: header-css"></div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.45/css/bootstrap-datetimepicker.css"
           th:href="@{/webjars/bootstrap-datetimepicker/}"/>
@@ -15,11 +15,11 @@
 
 <div th:replace="fragments/header :: header">...</div>
 
-<div class="container">
+<div class="container" style="margin-top:100px">
     <h2>Group Credentials</h2>
 
-    <table class="table table-bordered table-striped">
-        <thead>
+    <table class="table table-bordered table-striped table-hover table-responsive">
+        <thead class="thead-inverse">
         <tr>
             <th class="">№</th>
             <th class="">Account</th>
@@ -59,43 +59,8 @@
     <p><a class="btn btn-secondary" href="#" type="button" data-toggle="modal" data-target="#newModal">New PIN &raquo;</a></p>
 </div>
 
-
-<!--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>-->
-<!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>-->
-<!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>-->
-
 <div th:replace="fragments/footer :: footer"></div>
 
-<!--<script th:inline="javascript" type="text/javascript">-->
-    <!--/*<![CDATA[*/-->
-    <!--$(".btn[data-target='#editModal']").click(function() {-->
-        <!--var columnHeadings = $("thead th").map(function() {-->
-            <!--return $(this).text();-->
-        <!--}).get();-->
-        <!--columnHeadings.pop();-->
-        <!--var columnValues = $(this).parent().siblings().map(function() {-->
-            <!--return $(this).text();-->
-        <!--}).get();-->
-        <!--var modalBody = $('<div id="modalContent"></div>');-->
-        <!--var action = /*[[@{/pins/edit} ]]*/ 'placeholder';-->
-        <!--var modalForm = $('<form role="form" name="modalForm" th:object="${pin}" method="POST"></form>');-->
-        <!--$.each(columnHeadings, function(i, columnHeader) {-->
-            <!--var formGroup = $('<div class="form-group"></div>');-->
-            <!--formGroup.append('<label for="'+columnHeader+'">'+columnHeader+'</label>');-->
-            <!--formGroup.append('<input class="form-control" name="'+columnHeader+i+'" id="'+columnHeader+i+'" value="'+columnValues[i]+'" />');-->
-            <!--modalForm.append(formGroup);-->
-        <!--});-->
-        <!--modalBody.append(modalForm);-->
-        <!--modalBody.append('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');-->
-        <!--modalBody.append('<input type="submit" class="btn btn-primary" value="Submit Form"/>');-->
-
-        <!--$('.modal-body').html(modalBody);-->
-    <!--});-->
-    <!--$('.modal-footer .btn-primary').click(function() {-->
-        <!--$('form[name="modalForm"]').submit();-->
-    <!--});-->
-    <!--/*]]>*/-->
-<!--</script>-->
 </body>
 
 </html>

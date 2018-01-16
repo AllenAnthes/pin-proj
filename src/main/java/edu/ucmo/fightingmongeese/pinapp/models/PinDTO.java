@@ -5,7 +5,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import java.sql.Time;
 import java.util.Date;
 
 @Entity
@@ -25,8 +24,6 @@ public class PinDTO {
     @DateTimeFormat(pattern = "hh:mm:ss")
     private Date expire_time;
 
-//    @Column
-//    private
 
     public PinDTO() {
     }

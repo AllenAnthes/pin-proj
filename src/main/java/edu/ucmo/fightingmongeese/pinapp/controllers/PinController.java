@@ -1,29 +1,23 @@
 package edu.ucmo.fightingmongeese.pinapp.controllers;
 
 
-import edu.ucmo.fightingmongeese.pinapp.filters.ExpireDateFilter;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.models.PinDTO;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.beans.PropertyEditorSupport;
-import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -42,34 +36,42 @@ public class PinController {
 
     private static final Logger logger = Logger.getLogger(PinRESTController.class.getName());
 
-
+    /**
+     * Method for routing new submissions from the Thymeleaf UI to the REST endpoint
+     *
+     * @param pin     DTO that holds the info to be transferred to the actual endpoint.
+     *                Had to use a hack to get the Date and Time to properly translate
+     * @param request
+     */
     @RequestMapping(value = "pins/new", method = RequestMethod.POST)
-    public String add(@ModelAttribute PinDTO pin, Map<String, String> JSON, HttpServletRequest request) {
+    public String add(@ModelAttribute PinDTO pin, HttpServletRequest request) {
 
-        String baseUrl = String.format("%s://%s:%d/api/", request.getScheme(), request.getServerName(), request.getServerPort());
+        String baseUrl = String.format("%s://%s:%d/api/", request.getScheme(),
+                request.getServerName(), request.getServerPort());
         String url = baseUrl + "/new";
-
-        System.out.println(JSON);
 
         Map<String, String> payload = new HashMap<>();
         payload.put("account", pin.getAccount());
         payload.put("create_user", request.getUserPrincipal().getName());
+
+
         if (pin.getExpire_timestamp() != null && pin.getExpire_time() != null) {
             payload.put("expire_timestamp", String.valueOf(pin.getExpire_timestamp().getTime() + pin.getExpire_time().getTime()));
+        } else if (pin.getExpire_time() != null) {
+            payload.put("expire_timestamp", String.valueOf(pin.getExpire_timestamp().getTime()));
         }
-
 
         this.getRESTResponse(url, payload);
         return "redirect:/pins/list";
     }
 
-
+    /**
+     * Method for displaying PINs currently in the database as a table
+     */
     @RequestMapping(value = "pins/list", method = RequestMethod.GET)
     public String showCredentials(Model model) {
         List<Pin> pins = pinRepository.findAll();
-        model.addAttribute("filter", new ExpireDateFilter());
         model.addAttribute("pins", pins);
-//        Pin pin = new Pin();
         PinDTO pin = new PinDTO();
         pin.setExpire_timestamp(Timestamp.valueOf(LocalDateTime.now().plusDays(2)));
         model.addAttribute("pin", pin);
@@ -77,6 +79,14 @@ public class PinController {
         return "pin-table";
     }
 
+    /**
+     * Translates and passes claim request to the actual REST endpoint
+     *
+     * @param account
+     * @param user
+     * @param pin
+     * @param request
+     */
     @RequestMapping(value = "pins/claim/{account}/{pin}/{user}")
     public String claim(@PathVariable String account, @PathVariable String user, @PathVariable String pin, HttpServletRequest request) {
 
@@ -88,12 +98,23 @@ public class PinController {
         return "redirect:/pins/list";
     }
 
+    /**
+     * Simply deletes the oid given in path from the database
+     *
+     * @param oid
+     */
     @RequestMapping(value = "pins/delete/{oid}")
     public String delete(@PathVariable Integer oid) {
         pinRepository.delete(oid);
         return "redirect:/pins/list";
     }
 
+    /**
+     * Utility method for passing requests to the REST endpoints
+     *
+     * @param url    URL of the PinRestController endpoint
+     * @param params A map of the JSON that would be passed to the endpoint
+     */
     private String getRESTResponse(String url, Map<String, String> params) {
 
         RestTemplate template = new RestTemplate();
