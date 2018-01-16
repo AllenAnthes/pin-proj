@@ -30,6 +30,7 @@
             <th class="">Expire Timestamp</th>
             <th class="">Claim User</th>
             <th class="">Claim IP</th>
+            <th class="">Claim Timestamp</th>
             <th class="">Edit</th>
             <th class="">Delete</th>
         </tr>
@@ -45,6 +46,7 @@
             <td class="" th:text="${pin.expire_timestamp}"></td>
             <td class="" th:text="${pin.claim_user}"></td>
             <td class="" th:text="${pin.claim_ip}"></td>
+            <td class="" th:text="${pin.claim_timestamp}"></td>
             <td style="text-align:center;">
                 <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/claim/' + ${pin.account} + '/' + ${pin.pin} + '/' + ${#authentication.getPrincipal().getUsername()}}">Claim</a>
             </td>

@@ -23,6 +23,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        http.headers().frameOptions().sameOrigin();
+
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/home", "/about", "/h2", "/static**", "/webjars/**", "/api/**").permitAll()
