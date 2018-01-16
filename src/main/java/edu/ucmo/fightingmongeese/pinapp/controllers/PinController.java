@@ -42,29 +42,11 @@ public class PinController {
 
     private static final Logger logger = Logger.getLogger(PinRESTController.class.getName());
 
-//
-//    @InitBinder
-//    private void dateBinder(WebDataBinder binder) {
-//        //The date format to parse or output your dates
-//        SimpleDateFormat dateFormat = new SimpleDateFormat(dateFormat());
-//        //Create a new CustomDateEditor
-//        CustomDateEditor editor = new CustomDateEditor(dateFormat, true);
-//        //Register it as custom editor for the Date type
-//        binder.registerCustomEditor(Date.class, editor);
-//    }
-
-//
-//    @ModelAttribute("dateFormat")
-//    public String dateFormat() {
-//        return PinController.getDateFormat();
-//    }
-//
-
 
     @RequestMapping(value = "pins/new", method = RequestMethod.POST)
     public String add(@ModelAttribute PinDTO pin, Map<String, String> JSON, HttpServletRequest request) {
 
-        String baseUrl = String.format("%s://%s:%d/api/",request.getScheme(),  request.getServerName(), request.getServerPort());
+        String baseUrl = String.format("%s://%s:%d/api/", request.getScheme(), request.getServerName(), request.getServerPort());
         String url = baseUrl + "/new";
 
         System.out.println(JSON);
@@ -72,8 +54,8 @@ public class PinController {
         Map<String, String> payload = new HashMap<>();
         payload.put("account", pin.getAccount());
         payload.put("create_user", request.getUserPrincipal().getName());
-        if (pin.getExpire_timestamp() != null) {
-            payload.put("expire_timestamp", String.valueOf(pin.getExpire_timestamp().getTime()));
+        if (pin.getExpire_timestamp() != null && pin.getExpire_time() != null) {
+            payload.put("expire_timestamp", String.valueOf(pin.getExpire_timestamp().getTime() + pin.getExpire_time().getTime()));
         }
 
 
@@ -82,15 +64,14 @@ public class PinController {
     }
 
 
-
     @RequestMapping(value = "pins/list", method = RequestMethod.GET)
     public String showCredentials(Model model) {
         List<Pin> pins = pinRepository.findAll();
         model.addAttribute("filter", new ExpireDateFilter());
         model.addAttribute("pins", pins);
 //        Pin pin = new Pin();
-//        pin.setExpire_timestamp(Timestamp.valueOf(LocalDateTime.now().plusDays(2)));
         PinDTO pin = new PinDTO();
+        pin.setExpire_timestamp(Timestamp.valueOf(LocalDateTime.now().plusDays(2)));
         model.addAttribute("pin", pin);
 
         return "pin-table";
@@ -101,7 +82,7 @@ public class PinController {
 
         Map<String, String> payload = new HashMap<>();
         payload.put("user", user);
-        String baseUrl = String.format("%s://%s:%d/api/",request.getScheme(),  request.getServerName(), request.getServerPort());
+        String baseUrl = String.format("%s://%s:%d/api/", request.getScheme(), request.getServerName(), request.getServerPort());
         String url = baseUrl + account + "/" + pin;
         this.getRESTResponse(url, payload);
         return "redirect:/pins/list";
@@ -113,17 +94,16 @@ public class PinController {
         return "redirect:/pins/list";
     }
 
-    private String getRESTResponse(String url, Map<String, String> params){
+    private String getRESTResponse(String url, Map<String, String> params) {
 
         RestTemplate template = new RestTemplate();
-        HttpEntity<Map<String, String>> requestEntity= new HttpEntity<>(params);
-        String response = "";
-        try{
+        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(params);
+        String response;
+        try {
 
-            ResponseEntity<String> responseEntity = template.exchange(url, HttpMethod.POST, requestEntity,  String.class);
+            ResponseEntity<String> responseEntity = template.exchange(url, HttpMethod.POST, requestEntity, String.class);
             response = responseEntity.getBody();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             response = e.getMessage();
         }
         logger.info(response);
