@@ -12,4 +12,5 @@ public interface PinRepository extends JpaRepository<Pin, Integer> {
 
 
     Optional<Pin> findByAccountAndPin(String account, String pin);
+    Optional<Pin> findByPin(String pin);
 }

@@ -11,6 +11,7 @@ import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
@@ -69,8 +70,14 @@ public class PinRESTController {
     public Pin add(@RequestBody Pin pin, HttpServletRequest request) {
 
         SecureRandom random = new SecureRandom();
-        int randomPin = random.nextInt(1000000);
-        String pinString = String.format("%05d", randomPin);
+        boolean notUnique;
+        String pinString;
+
+        do {
+            int randomPin = random.nextInt(1000000);
+            pinString = String.format("%05d", randomPin);
+            notUnique = pinRepository.findByPin(pinString).isPresent();
+        } while (notUnique);
 
         pin.setPin(pinString);
         pin.setCreate_timestamp(LocalDateTime.now());
@@ -88,7 +95,7 @@ public class PinRESTController {
     }
 
     /**
-     * Simple method for validating the correct params are sent to the claim handler.  If request is found to
+     * Utility method for validating the correct params are sent to the claim handler.  If request is found to
      * be invalid method returns an exception to be logged and Spring sends the requester an appropriate
      * HTTP response code and message.
      *
