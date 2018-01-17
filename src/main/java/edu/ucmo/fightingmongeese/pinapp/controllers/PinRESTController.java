@@ -1,9 +1,9 @@
 package edu.ucmo.fightingmongeese.pinapp.controllers;
 
+import edu.ucmo.fightingmongeese.pinapp.exceptions.*;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,6 +68,10 @@ public class PinRESTController {
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public Pin add(@RequestBody Pin pin, HttpServletRequest request) {
 
+        if (pin.getExpire_timestamp() != null && pin.getExpire_timestamp().isBefore(LocalDateTime.now())) {
+            throw new InvalidExpireTimeException(pin.getExpire_timestamp());
+        }
+
         SecureRandom random = new SecureRandom();
         boolean notUnique;
         String pinString;
@@ -126,51 +130,3 @@ public class PinRESTController {
     }
 }
 
-/**
- * Custom exception that causes Spring to return
- * a 404 response when account is not found
- */
-@ResponseStatus(HttpStatus.NOT_FOUND)
-class AccountNotFoundException extends RuntimeException {
-
-    AccountNotFoundException(String account) {
-        super("could not find user '" + account + "'.");
-    }
-}
-
-/**
- * Custom exception that causes Spring to return
- * a 400 response when expired PIN is claimed
- */
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class ExpiredPinException extends RuntimeException {
-
-    ExpiredPinException(String PIN) {
-        super("PIN was found but has expired.  PIN: " + PIN);
-    }
-}
-
-/**
- * Custom exception that causes Spring to return
- * a 400 response when used PIN is claimed
- */
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class PinAlreadyClaimedException extends RuntimeException {
-
-    PinAlreadyClaimedException(String PIN) {
-        super("PIN was found but had already been claimed.  PIN: " + PIN);
-    }
-}
-
-/**
- * Custom exception that causes Spring to return
- * a 400 response a claim is sent without a user
- * identified in the request body
- */
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-class MissingClaimUserException extends RuntimeException {
-
-    MissingClaimUserException(Map<String, String> payload) {
-        super("PIN Claim request missing `user` in request body.  Payload: " + payload);
-    }
-}
