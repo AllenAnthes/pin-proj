@@ -1,11 +1,14 @@
 package edu.ucmo.fightingmongeese.pinapp.models;
 
+import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
+
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+@Data
 @Entity
 @Table(name = "pins")
 public class Pin {
@@ -49,18 +52,7 @@ public class Pin {
     @Column(name = "claim_ip")
     private String claim_ip;
 
-    public Pin() {
-    }
-
-    public Pin(String account, String pin, String create_ip, String create_user, LocalDateTime create_timestamp, String claim_user, String claim_ip) {
-        this.account = account;
-        this.pin = pin;
-        this.create_ip = create_ip;
-        this.create_user = create_user;
-        this.create_timestamp = create_timestamp;
-        this.claim_user = claim_user;
-        this.claim_ip = claim_ip;
-    }
+    public Pin() {} //Empty Constructor for JPA
 
     // Constructor for start-up runner
     public Pin(String account, String create_ip, String create_user) {
@@ -69,83 +61,4 @@ public class Pin {
         this.create_user = create_user;
     }
 
-    public Integer getOid() {
-        return oid;
-    }
-
-    public void setOid(Integer oid) {
-        this.oid = oid;
-    }
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-    }
-
-    public String getPin() {
-        return pin;
-    }
-
-    public void setPin(String pin) {
-        this.pin = pin;
-    }
-
-    public String getCreate_ip() {
-        return create_ip;
-    }
-
-    public void setCreate_ip(String create_ip) {
-        this.create_ip = create_ip;
-    }
-
-    public String getCreate_user() {
-        return create_user;
-    }
-
-    public void setCreate_user(String create_user) {
-        this.create_user = create_user;
-    }
-
-    public LocalDateTime getCreate_timestamp() {
-        return create_timestamp;
-    }
-
-    public void setCreate_timestamp(LocalDateTime create_timestamp) {
-        this.create_timestamp = create_timestamp;
-    }
-
-    public String getClaim_user() {
-        return claim_user;
-    }
-
-    public void setClaim_user(String claim_user) {
-        this.claim_user = claim_user;
-    }
-
-    public String getClaim_ip() {
-        return claim_ip;
-    }
-
-    public void setClaim_ip(String claim_ip) {
-        this.claim_ip = claim_ip;
-    }
-
-    public LocalDateTime getClaim_timestamp() {
-        return claim_timestamp;
-    }
-
-    public void setClaim_timestamp(LocalDateTime claim_timestamp) {
-        this.claim_timestamp = claim_timestamp;
-    }
-
-    public LocalDateTime getExpire_timestamp() {
-        return expire_timestamp;
-    }
-
-    public void setExpire_timestamp(LocalDateTime expire_timestamp) {
-        this.expire_timestamp = expire_timestamp;
-    }
 }
