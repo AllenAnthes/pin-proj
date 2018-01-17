@@ -36,7 +36,7 @@ public class PinRESTController {
     @RequestMapping(value = "/{account}/{requestPin}", method = RequestMethod.POST)
     public Pin claim(@PathVariable String account, @PathVariable String requestPin, @RequestBody Map<String, String> payload, HttpServletRequest request) {
 
-        logger.info(String.format("Claim received from user: %s at %s -- Account: %s | PIN: %s | IP: ",
+        logger.info(String.format("Claim received from user: %s at %s -- Account: %s | PIN: %s",
                 payload.getOrDefault("user", "NO USER"), request.getRemoteAddr(), account, requestPin));
 
         Pin pin = validateClaim(account, requestPin, payload);
