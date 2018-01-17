@@ -15,11 +15,15 @@ import java.util.logging.Logger;
 public class ApplicationStartup
         implements ApplicationListener<ApplicationReadyEvent> {
 
-    @Autowired
-    private PinRepository pinRepository;
+    private final PinRepository pinRepository;
 
 
     private static final Logger logger = Logger.getLogger(ApplicationStartup.class.getName());
+
+    @Autowired
+    public ApplicationStartup(PinRepository pinRepository) {
+        this.pinRepository = pinRepository;
+    }
 
     /**
      * This event is executed as late as conceivably possible to indicate that
@@ -48,4 +52,4 @@ public class ApplicationStartup
     }
 
 
-} // class
+}

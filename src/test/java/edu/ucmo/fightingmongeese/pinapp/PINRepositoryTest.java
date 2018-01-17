@@ -41,7 +41,6 @@ public class PINRepositoryTest {
 
         assertThat(found.getAccount())
                 .isEqualTo(pin.getAccount());
-
     }
 
 

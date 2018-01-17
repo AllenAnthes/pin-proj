@@ -17,13 +17,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.sql.Timestamp;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.temporal.TemporalAmount;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -58,8 +54,6 @@ public class PinController {
         Map<String, String> payload = new HashMap<>();
         payload.put("account", pin.getAccount());
         payload.put("create_user", request.getUserPrincipal().getName());
-
-        LocalDateTime lt = LocalDateTime.of(pin.getExpire_date(),pin.getExpire_time());
 
         if (pin.getExpire_date() != null && pin.getExpire_time() != null) {
             payload.put("expire_timestamp", String.valueOf(LocalDateTime.of(pin.getExpire_date(),pin.getExpire_time())));

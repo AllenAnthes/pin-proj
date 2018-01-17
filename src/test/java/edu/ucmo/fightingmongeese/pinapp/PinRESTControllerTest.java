@@ -15,4 +15,14 @@ public class PinRESTControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    /*
+     * TODOs
+     * Valid new without expire time
+     * Valid new with expire time
+     * Invalid new early expire time (throws correct exception)
+     * Invalid new no user ''
+     * Valid claim
+     * Invalid claim (various permutations of user not found, wrong PIN, wrong user, etc)
+     */
+
 }
