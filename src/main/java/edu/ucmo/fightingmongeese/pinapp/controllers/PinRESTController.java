@@ -8,10 +8,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
@@ -38,7 +36,8 @@ public class PinRESTController {
     @RequestMapping(value = "/{account}/{requestPin}", method = RequestMethod.POST)
     public Pin claim(@PathVariable String account, @PathVariable String requestPin, @RequestBody Map<String, String> payload, HttpServletRequest request) {
 
-        logger.info(String.format("Claim received: Account: %s | PIN: %s | IP: %s", account, requestPin, request.getRemoteAddr()));
+        logger.info(String.format("Claim received from user: %s at %s -- Account: %s | PIN: %s | IP: ",
+                payload.getOrDefault("user", "NO USER"), request.getRemoteAddr(), account, requestPin));
 
         Pin pin = validateClaim(account, requestPin, payload);
 
@@ -82,7 +81,8 @@ public class PinRESTController {
         pin.setPin(pinString);
         pin.setCreate_timestamp(LocalDateTime.now());
 
-        logger.info(String.format("New PIN received: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
+        logger.info(String.format("New PIN received from User: %s at %s -- Account: %s | PIN: %s",
+                pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin()));
         pin.setCreate_ip(request.getRemoteAddr());
 
         if (pin.getExpire_timestamp() == null) {
@@ -133,7 +133,7 @@ public class PinRESTController {
 @ResponseStatus(HttpStatus.NOT_FOUND)
 class AccountNotFoundException extends RuntimeException {
 
-    public AccountNotFoundException(String account) {
+    AccountNotFoundException(String account) {
         super("could not find user '" + account + "'.");
     }
 }
@@ -145,7 +145,7 @@ class AccountNotFoundException extends RuntimeException {
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 class ExpiredPinException extends RuntimeException {
 
-    public ExpiredPinException(String PIN) {
+    ExpiredPinException(String PIN) {
         super("PIN was found but has expired.  PIN: " + PIN);
     }
 }
@@ -157,7 +157,7 @@ class ExpiredPinException extends RuntimeException {
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 class PinAlreadyClaimedException extends RuntimeException {
 
-    public PinAlreadyClaimedException(String PIN) {
+    PinAlreadyClaimedException(String PIN) {
         super("PIN was found but had already been claimed.  PIN: " + PIN);
     }
 }
@@ -170,7 +170,7 @@ class PinAlreadyClaimedException extends RuntimeException {
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 class MissingClaimUserException extends RuntimeException {
 
-    public MissingClaimUserException(Map<String, String> payload) {
+    MissingClaimUserException(Map<String, String> payload) {
         super("PIN Claim request missing `user` in request body.  Payload: " + payload);
     }
 }
