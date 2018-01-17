@@ -113,8 +113,13 @@ public class PinController {
      * @param oid
      */
     @RequestMapping(value = "pins/delete/{oid}")
-    public String delete(@PathVariable Integer oid) {
+    public String delete(@PathVariable Integer oid, HttpServletRequest request) {
+        Pin pin = pinRepository.getOne(oid);
         pinRepository.delete(oid);
+
+        logger.info(String.format("PIN deleted: Account: %s | PIN: %s | User: %s | IP: %s",
+                pin.getAccount(), pin.getPin(), request.getUserPrincipal().getName(), request.getRemoteAddr()));
+
         return "redirect:/pins/list";
     }
 
