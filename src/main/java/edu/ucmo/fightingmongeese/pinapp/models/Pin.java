@@ -1,11 +1,10 @@
 package edu.ucmo.fightingmongeese.pinapp.models;
 
-import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pins")
@@ -32,18 +31,17 @@ public class Pin {
     private String create_user;
 
 
-    @CreationTimestamp
     @Column(name = "create_timestamp", updatable = false)
-    private Timestamp create_timestamp;
+    private LocalDateTime create_timestamp;
 
 
     @Column(name = "expire_timestamp")
-    @DateTimeFormat(pattern = "yyyy-mm-dd HH:mm:ss")
-    private Timestamp expire_timestamp;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime expire_timestamp;
 
 
     @Column(name = "claim_timestamp")
-    private Timestamp claim_timestamp;
+    private LocalDateTime claim_timestamp;
 
     @Column(name = "claim_user")
     private String claim_user;
@@ -54,7 +52,7 @@ public class Pin {
     public Pin() {
     }
 
-    public Pin(String account, String pin, String create_ip, String create_user, Timestamp create_timestamp, String claim_user, String claim_ip) {
+    public Pin(String account, String pin, String create_ip, String create_user, LocalDateTime create_timestamp, String claim_user, String claim_ip) {
         this.account = account;
         this.pin = pin;
         this.create_ip = create_ip;
@@ -64,6 +62,7 @@ public class Pin {
         this.claim_ip = claim_ip;
     }
 
+    // Constructor for start-up runner
     public Pin(String account, String create_ip, String create_user) {
         this.account = account;
         this.create_ip = create_ip;
@@ -110,11 +109,11 @@ public class Pin {
         this.create_user = create_user;
     }
 
-    public Timestamp getCreate_timestamp() {
+    public LocalDateTime getCreate_timestamp() {
         return create_timestamp;
     }
 
-    public void setCreate_timestamp(Timestamp create_timestamp) {
+    public void setCreate_timestamp(LocalDateTime create_timestamp) {
         this.create_timestamp = create_timestamp;
     }
 
@@ -134,19 +133,19 @@ public class Pin {
         this.claim_ip = claim_ip;
     }
 
-    public Timestamp getClaim_timestamp() {
+    public LocalDateTime getClaim_timestamp() {
         return claim_timestamp;
     }
 
-    public void setClaim_timestamp(Timestamp claim_timestamp) {
+    public void setClaim_timestamp(LocalDateTime claim_timestamp) {
         this.claim_timestamp = claim_timestamp;
     }
 
-    public Timestamp getExpire_timestamp() {
+    public LocalDateTime getExpire_timestamp() {
         return expire_timestamp;
     }
 
-    public void setExpire_timestamp(Timestamp expire_timestamp) {
+    public void setExpire_timestamp(LocalDateTime expire_timestamp) {
         this.expire_timestamp = expire_timestamp;
     }
 }

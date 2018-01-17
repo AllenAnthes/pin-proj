@@ -42,11 +42,11 @@
             <td class="" th:text="${pin.pin}"></td>
             <td class="" th:text="${pin.create_user}"></td>
             <td class="" th:text="${pin.create_ip}"></td>
-            <td class="" th:text="${pin.create_timestamp}"></td>
-            <td class="" th:text="${pin.expire_timestamp}"></td>
+            <td class="" th:text="${#temporals.format(pin.create_timestamp,'yyy/MM/dd HH:mm:ss')}"></td>
+            <td class="" th:text="${#temporals.format(pin.expire_timestamp,'yyy/MM/dd HH:mm:ss')}"></td>
             <td class="" th:text="${pin.claim_user}"></td>
             <td class="" th:text="${pin.claim_ip}"></td>
-            <td class="" th:text="${pin.claim_timestamp}"></td>
+            <td class="" th:text="(${pin.claim_timestamp} != null) ? ${#temporals.format(pin.claim_timestamp,'yyy/MM/dd HH:mm:ss' )} : ''"></td>
             <td style="text-align:center;">
                 <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/claim/' + ${pin.account} + '/' + ${pin.pin} + '/' + ${#authentication.getPrincipal().getUsername()}}">Claim</a>
             </td>

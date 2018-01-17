@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -43,7 +43,7 @@ public class PinRESTController {
 
         pin.setClaim_ip(request.getRemoteAddr());
         pin.setClaim_user(payload.get("user"));
-        pin.setClaim_timestamp(Timestamp.valueOf(LocalDateTime.now()));
+        pin.setClaim_timestamp(LocalDateTime.now());
 
         Pin res = pinRepository.save(pin);
         logger.info(String.format("Pin successfully claimed: Account: %s | PIN: %s | IP: %s", account, requestPin, request.getRemoteAddr()));
@@ -73,13 +73,14 @@ public class PinRESTController {
         String pinString = String.format("%05d", randomPin);
 
         pin.setPin(pinString);
+        pin.setCreate_timestamp(LocalDateTime.now());
 
         logger.info(String.format("New PIN received: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
         pin.setCreate_ip(request.getRemoteAddr());
 
         if (pin.getExpire_timestamp() == null) {
             // Default expire time set to 48 hours
-            pin.setExpire_timestamp(Timestamp.valueOf(LocalDateTime.now().plusDays(2)));
+            pin.setExpire_timestamp(LocalDateTime.now().plusDays(2));
         }
         pin = this.pinRepository.save(pin);
         logger.info(String.format("New PIN successfully saved: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
@@ -102,7 +103,7 @@ public class PinRESTController {
                 () -> new AccountNotFoundException(account)
         );
 
-        if (pin.getExpire_timestamp().before(Timestamp.valueOf(LocalDateTime.now()))) {
+        if (LocalDateTime.now().isAfter(pin.getExpire_timestamp())) {
             throw new ExpiredPinException(requestPin);
         }
 
