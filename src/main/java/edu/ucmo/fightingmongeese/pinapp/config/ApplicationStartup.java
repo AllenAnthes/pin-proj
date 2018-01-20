@@ -2,6 +2,8 @@ package edu.ucmo.fightingmongeese.pinapp.config;
 
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
@@ -9,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.logging.Logger;
 
 @Component
 public class ApplicationStartup
@@ -18,7 +19,7 @@ public class ApplicationStartup
     private final PinRepository pinRepository;
 
 
-    private static final Logger logger = Logger.getLogger(ApplicationStartup.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationStartup.class);
 
     @Autowired
     public ApplicationStartup(PinRepository pinRepository) {
@@ -59,6 +60,8 @@ public class ApplicationStartup
         pin.setCreate_timestamp(LocalDateTime.now());
         pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
         pinRepository.save(pin);
+
+        logger.info("Database pre-populated with 3 PINs");
 
 
     }

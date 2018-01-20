@@ -4,6 +4,8 @@ package edu.ucmo.fightingmongeese.pinapp.controllers;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.models.PinDTO;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -23,11 +25,10 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Temporary Controller for the Thymeleaf based front-end
- * Will most likely be removed before prod
+ * Will most likely be removed before prod.  No judging my code here
  */
 @Controller
 public class PinController {
@@ -35,7 +36,7 @@ public class PinController {
     @Autowired
     PinRepository pinRepository;
 
-    private static final Logger logger = Logger.getLogger(PinRESTController.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(PinRESTController.class);
 
     /**
      * Method for routing new submissions from the Thymeleaf UI to the REST endpoint
@@ -134,7 +135,7 @@ public class PinController {
             response = responseEntity.getBody();
         } catch (Exception e) {
             response = e.getMessage();
-            logger.warning(response);
+            logger.warn(response);
         }
 //        logger.info(response);
         return response;
