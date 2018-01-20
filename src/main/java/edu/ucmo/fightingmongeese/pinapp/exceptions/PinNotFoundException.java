@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * a 404 response when account is not found
  */
 @ResponseStatus(HttpStatus.NOT_FOUND)
-public class AccountNotFoundException extends RuntimeException {
+public class PinNotFoundException extends RuntimeException {
 
-    public AccountNotFoundException(String account) {
-        super("could not find user '" + account + "'.");
+    public PinNotFoundException(String pin) {
+        super("could not find pin in database.  Pin provided: " + pin + ".");
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.Map;
 import java.util.logging.Logger;
 
 @RestController
@@ -28,26 +27,22 @@ public class PinRESTController {
      *
      * Besides basic param validation there is currently no authentication implemented.
      *
-     * @param account       The account associated with the one-time-use PIN
-     * @param requestPin    The PIN being claimed
-     * @param payload       The JSON payload that must contain the user who is doing the claim
      * @param request       Request metadata from Spring
      */
-    @RequestMapping(value = "/{account}/{requestPin}", method = RequestMethod.POST)
-    public Pin claim(@PathVariable String account, @PathVariable String requestPin, @RequestBody Map<String, String> payload, HttpServletRequest request) {
+    @RequestMapping(value = "/claim", method = RequestMethod.POST)
+    public Pin claim(@RequestBody Pin pin, HttpServletRequest request) {
 
-        logger.info(String.format("Claim received from user: %s at %s -- Account: %s | PIN: %s",
-                payload.getOrDefault("user", "NO USER"), request.getRemoteAddr(), account, requestPin));
+        logger.info(String.format("Claim received from user: %s at %s with PIN: %s",
+                pin.getClaim_user(), request.getRemoteAddr(), pin.getPin()));
 
-        Pin pin = validateClaim(account, requestPin, payload);
+        pin = validateClaim(pin.getPin(), pin.getClaim_user());
 
         pin.setClaim_ip(request.getRemoteAddr());
-        pin.setClaim_user(payload.get("user"));
         pin.setClaim_timestamp(LocalDateTime.now());
 
-        Pin res = pinRepository.save(pin);
-        logger.info(String.format("Pin successfully claimed: Account: %s | PIN: %s | IP: %s", account, requestPin, request.getRemoteAddr()));
-        return res;
+        pin = pinRepository.save(pin);
+        logger.info(String.format("Pin successfully claimed: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
+        return pin;
     }
 
     /**
@@ -68,17 +63,26 @@ public class PinRESTController {
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public Pin add(@RequestBody Pin pin, HttpServletRequest request) {
 
+        // TODO: Better input validation
+        // TODO: Check if active PIN exists for account
+
         if (pin.getExpire_timestamp() != null && pin.getExpire_timestamp().isBefore(LocalDateTime.now())) {
             throw new InvalidExpireTimeException(pin.getExpire_timestamp());
         }
 
+
+
         SecureRandom random = new SecureRandom();
+
+        // TODO: !! DON'T LET THIS GO TO PROD WITH THE SEED !!
+        random.setSeed("totessecure".getBytes());
+
         boolean notUnique;
         String pinString;
 
         do {
             int randomPin = random.nextInt(1000000);
-            pinString = String.format("%05d", randomPin);
+            pinString = String.format("%06d", randomPin);
             notUnique = pinRepository.findByPin(pinString).isPresent();
         } while (notUnique);
 
@@ -90,8 +94,8 @@ public class PinRESTController {
         pin.setCreate_ip(request.getRemoteAddr());
 
         if (pin.getExpire_timestamp() == null) {
-            // Default expire time set to 48 hours
-            pin.setExpire_timestamp(LocalDateTime.now().plusDays(2));
+            // Default expire time set to 30 minutes
+            pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
         }
         pin = this.pinRepository.save(pin);
         logger.info(String.format("New PIN successfully saved: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
@@ -104,15 +108,14 @@ public class PinRESTController {
      * HTTP response code and message.
      *
      * If request params are all valid the method returns the current PIN from the persistence repository
-     *
-     * @param account
      * @param requestPin
-     * @param payload
+     * @param claim_user
      */
-    private Pin validateClaim(String account, String requestPin, Map<String, String> payload) {
-        Pin pin = this.pinRepository.findByAccountAndPin(account, requestPin).orElseThrow(
-                () -> new AccountNotFoundException(account)
+    private Pin validateClaim(String requestPin, String claim_user) {
+        Pin pin = this.pinRepository.findByPin(requestPin).orElseThrow(
+                () -> new PinNotFoundException(requestPin)
         );
+        pin.setClaim_user(claim_user);
 
         if (LocalDateTime.now().isAfter(pin.getExpire_timestamp())) {
             throw new ExpiredPinException(requestPin);
@@ -122,8 +125,8 @@ public class PinRESTController {
             throw new PinAlreadyClaimedException(requestPin);
         }
 
-        if (!payload.containsKey("user")) {
-            throw new MissingClaimUserException(payload);
+        if (claim_user == null) {
+            throw new MissingClaimUserException(pin);
         }
 
         return pin;

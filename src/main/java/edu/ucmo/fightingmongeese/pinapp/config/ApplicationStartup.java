@@ -34,20 +34,31 @@ public class ApplicationStartup
 
         SecureRandom random = new SecureRandom();
 
-        Pin pin = new Pin("Bob", "192.168.0.22", "admin");
+        random.setSeed("totessecure".getBytes());
+
+        Pin pin = new Pin("Bob's Checking", "192.168.0.22", "bob");
         int randomPin = random.nextInt(1000000);
-        String pinString = String.format("%05d", randomPin);
+        String pinString = String.format("%06d", randomPin);
         pin.setPin(pinString);
         pin.setCreate_timestamp(LocalDateTime.now());
-        pin.setExpire_timestamp(LocalDateTime.now().plusDays(2));
+        pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
         pinRepository.save(pin);
 
-        pin = new Pin("Sally", "192.168.0.35", "user");
+        pin = new Pin("Sally's Savings", "192.168.0.35", "sally");
         randomPin = random.nextInt(1000000);
-        pinString = String.format("%05d", randomPin);
+        pinString = String.format("%06d", randomPin);
         pin.setPin(pinString);
         pin.setCreate_timestamp(LocalDateTime.now());
-        pin.setExpire_timestamp(LocalDateTime.now().plusDays(2));
+        pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
+        pinRepository.save(pin);
+
+
+        pin = new Pin("BobsSavings", "192.168.0.35", "bob");
+        int num = 1234;
+        pinString = String.format("%06d", num);
+        pin.setPin(pinString);
+        pin.setCreate_timestamp(LocalDateTime.now());
+        pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
         pinRepository.save(pin);
     }
 

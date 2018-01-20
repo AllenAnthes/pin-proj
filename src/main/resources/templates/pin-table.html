@@ -39,7 +39,7 @@
         <tr th:each="pin : ${pins}">
             <td class="" th:text="${pin.oid}"></td>
             <td class="" th:text="${pin.account}"></td>
-            <td class="" th:text="${pin.pin}"></td>
+            <td class="" th:text="${#numbers.formatInteger(pin.pin, 6)}"></td>
             <td class="" th:text="${pin.create_user}"></td>
             <td class="" th:text="${pin.create_ip}"></td>
             <td class="" th:text="${#temporals.format(pin.create_timestamp,'yyy/MM/dd HH:mm:ss')}"></td>

@@ -94,10 +94,10 @@ public class PinController {
     public String claim(@PathVariable String account, @PathVariable String user, @PathVariable String pin, HttpServletRequest request) {
 
         Map<String, String> payload = new HashMap<>();
-        payload.put("user", user);
-        String baseUrl = String.format("%s://%s:%d/api/", request.getScheme(), request.getServerName(), request.getServerPort());
-        String url = baseUrl + account + "/" + pin;
-        this.getRESTResponse(url, payload);
+        payload.put("claim_user", user);
+        payload.put("pin", pin);
+        String baseUrl = String.format("%s://%s:%d/api/claim", request.getScheme(), request.getServerName(), request.getServerPort());
+        this.getRESTResponse(baseUrl, payload);
         return "redirect:/pins/list";
     }
 
