@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,7 +28,7 @@ public class PinRESTController {
      * @param pin     The supplied PIN must have the claim_user, pin, and claim_account fields supplied
      * @param request
      */
-    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+    @PostMapping(value = "/cancel")
     public Pin cancel(@RequestBody Pin pin, HttpServletRequest request) {
 
         logger.info(String.format("Cancel request received from user: %s at %s with PIN: %s for account: %s",
@@ -51,8 +52,8 @@ public class PinRESTController {
      * @param pin
      * @param request Request metadata from Spring
      */
-    @RequestMapping(value = "/claim", method = RequestMethod.POST)
-    public Pin claim(@RequestBody Pin pin, HttpServletRequest request) {
+    @PostMapping(value = "/claim")
+    public Pin claim(@Valid @RequestBody Pin pin, HttpServletRequest request) {
 
         logger.info(String.format("Claim received from user: %s at %s with PIN: %s",
                 pin.getClaim_user(), request.getRemoteAddr(), pin.getPin()));
@@ -80,7 +81,7 @@ public class PinRESTController {
      *                Spring/JPA handles the translation between JSON and a Java object.
      * @param request Request metadata from Spring
      */
-    @RequestMapping(value = "/new", method = RequestMethod.POST)
+    @PostMapping(value = "/new")
     public Pin add(@RequestBody Pin pin, HttpServletRequest request) {
 
         // TODO: Better input validation
