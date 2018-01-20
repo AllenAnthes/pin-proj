@@ -10,10 +10,10 @@ import org.thymeleaf.extras.java8time.dialect.Java8TimeDialect;
 @EnableJpaAuditing
 public class PinApp {
 
-	@Bean
-	public Java8TimeDialect java8TimeDialect() {
-		return new Java8TimeDialect();
-	}
+//    @Bean
+//    public Java8TimeDialect java8TimeDialect() {
+//        return new Java8TimeDialect();
+//    }
 
 
 	public static void main(String[] args) {

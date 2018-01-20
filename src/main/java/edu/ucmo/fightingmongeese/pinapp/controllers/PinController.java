@@ -56,12 +56,12 @@ public class PinController {
         payload.put("create_user", request.getUserPrincipal().getName());
 
         if (pin.getExpire_date() != null && pin.getExpire_time() != null) {
-            payload.put("expire_timestamp", String.valueOf(LocalDateTime.of(pin.getExpire_date(),pin.getExpire_time())));
+            payload.put("expire_timestamp", String.valueOf(LocalDateTime.of(pin.getExpire_date(), pin.getExpire_time())));
         } else if (pin.getExpire_date() != null) {
             payload.put("expire_timestamp", String.valueOf(pin.getExpire_date()));
         }
 
-        this.getRESTResponse(url, payload);
+        String res = this.getRESTResponse(url, payload);
         return "redirect:/pins/list";
     }
 
@@ -134,8 +134,9 @@ public class PinController {
             response = responseEntity.getBody();
         } catch (Exception e) {
             response = e.getMessage();
+            logger.warning(response);
         }
-        logger.info(response);
+//        logger.info(response);
         return response;
     }
 }

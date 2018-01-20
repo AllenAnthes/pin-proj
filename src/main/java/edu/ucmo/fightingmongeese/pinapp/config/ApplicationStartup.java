@@ -44,6 +44,14 @@ public class ApplicationStartup
         pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
         pinRepository.save(pin);
 
+        pin = new Pin("BobsSavings", "192.168.0.35", "bob");
+        int num = 1234;
+        pinString = String.format("%06d", num);
+        pin.setPin(pinString);
+        pin.setCreate_timestamp(LocalDateTime.now());
+        pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
+        pinRepository.save(pin);
+
         pin = new Pin("SallysSavings", "192.168.0.35", "sally");
         randomPin = random.nextInt(1000000);
         pinString = String.format("%06d", randomPin);
@@ -53,13 +61,6 @@ public class ApplicationStartup
         pinRepository.save(pin);
 
 
-        pin = new Pin("BobsSavings", "192.168.0.35", "bob");
-        int num = 1234;
-        pinString = String.format("%06d", num);
-        pin.setPin(pinString);
-        pin.setCreate_timestamp(LocalDateTime.now());
-        pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
-        pinRepository.save(pin);
     }
 
 

@@ -1,4 +1,10 @@
-logging.level.org.springframework.web: info
+logging:
+  path: logs
+  pattern.console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %highlight(%-5level) %logger{10}.%M - %msg%n"
+  pattern.file: "%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level %logger.%M - %msg%n"
+  level.org.springframework.web: info
+
+
 
 server.port: 8080
 spring.mvc.view.suffix: .html
@@ -12,7 +18,7 @@ spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
 spring.datasource.initialize: true
 spring.jpa:
   hibernate.ddl-auto: create-drop
-  show-sql: true
+  show-sql: false
 
 spring.data.rest.base-path: /api
 

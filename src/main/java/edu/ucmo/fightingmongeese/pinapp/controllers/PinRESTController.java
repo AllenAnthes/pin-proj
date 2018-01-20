@@ -3,6 +3,8 @@ package edu.ucmo.fightingmongeese.pinapp.controllers;
 import edu.ucmo.fightingmongeese.pinapp.exceptions.*;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api")
@@ -20,7 +21,7 @@ public class PinRESTController {
     @Autowired
     private PinRepository pinRepository;
 
-    private static final Logger logger = Logger.getLogger(PinRESTController.class.getName());
+    private static final Logger logger = LoggerFactory.getLogger(PinRESTController.class);
 
     /**
      * Method for handling cancel requests.  Works by simply having the user claim their own pin
@@ -31,8 +32,8 @@ public class PinRESTController {
     @PostMapping(value = "/cancel")
     public Pin cancel(@Validated(Pin.Cancel.class) @RequestBody Pin pin, HttpServletRequest request) {
 
-        logger.info(String.format("Cancel request received from user: %s at %s with PIN: %s for account: %s",
-                pin.getClaim_user(), request.getRemoteAddr(), pin.getPin(), pin.getAccount()));
+        logger.info("Cancel request received from user: {} at {} with PIN: {} for account: {}",
+                pin.getClaim_user(), request.getRemoteAddr(), pin.getPin(), pin.getAccount());
 
         pin = validateCancel(pin.getPin(), pin.getClaim_user());
 
@@ -40,7 +41,7 @@ public class PinRESTController {
         pin.setClaim_timestamp(LocalDateTime.now());
 
         pin = pinRepository.save(pin);
-        logger.info(String.format("Pin successfully canceled: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
+        logger.info("Pin successfully canceled: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
         return pin;
     }
 
@@ -55,8 +56,8 @@ public class PinRESTController {
     @PostMapping(value = "/claim")
     public Pin claim(@Validated(Pin.Claim.class) @RequestBody Pin pin, HttpServletRequest request) {
 
-        logger.info(String.format("Claim received from user: %s at %s with PIN: %s",
-                pin.getClaim_user(), request.getRemoteAddr(), pin.getPin()));
+        logger.info("Claim received from user: {} at {} with PIN: {}",
+                pin.getClaim_user(), request.getRemoteAddr(), pin.getPin());
 
         pin = validateClaim(pin.getPin(), pin.getClaim_user());
 
@@ -64,7 +65,7 @@ public class PinRESTController {
         pin.setClaim_timestamp(LocalDateTime.now());
 
         pin = pinRepository.save(pin);
-        logger.info(String.format("Pin successfully claimed: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
+        logger.info("Pin successfully claimed: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
         return pin;
     }
 
@@ -104,8 +105,8 @@ public class PinRESTController {
         pin.setPin(pinString);
         pin.setCreate_timestamp(LocalDateTime.now());
 
-        logger.info(String.format("New PIN received from User: %s at %s -- Account: %s | PIN: %s",
-                pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin()));
+        logger.info("New PIN received from User: {} at {} -- Account: {} | PIN: {}",
+                pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin());
         pin.setCreate_ip(request.getRemoteAddr());
 
         if (pin.getExpire_timestamp() == null) {
@@ -113,7 +114,7 @@ public class PinRESTController {
             pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
         }
         pin = this.pinRepository.save(pin);
-        logger.info(String.format("New PIN successfully saved: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
+        logger.info("New PIN successfully saved: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
         return pin;
     }
 
