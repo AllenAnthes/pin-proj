@@ -4,10 +4,10 @@ import edu.ucmo.fightingmongeese.pinapp.exceptions.*;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,7 +29,7 @@ public class PinRESTController {
      * @param request
      */
     @PostMapping(value = "/cancel")
-    public Pin cancel(@RequestBody Pin pin, HttpServletRequest request) {
+    public Pin cancel(@Validated(Pin.Cancel.class) @RequestBody Pin pin, HttpServletRequest request) {
 
         logger.info(String.format("Cancel request received from user: %s at %s with PIN: %s for account: %s",
                 pin.getClaim_user(), request.getRemoteAddr(), pin.getPin(), pin.getAccount()));
@@ -53,7 +53,7 @@ public class PinRESTController {
      * @param request Request metadata from Spring
      */
     @PostMapping(value = "/claim")
-    public Pin claim(@Valid @RequestBody Pin pin, HttpServletRequest request) {
+    public Pin claim(@Validated(Pin.Claim.class) @RequestBody Pin pin, HttpServletRequest request) {
 
         logger.info(String.format("Claim received from user: %s at %s with PIN: %s",
                 pin.getClaim_user(), request.getRemoteAddr(), pin.getPin()));
@@ -82,7 +82,7 @@ public class PinRESTController {
      * @param request Request metadata from Spring
      */
     @PostMapping(value = "/new")
-    public Pin add(@RequestBody Pin pin, HttpServletRequest request) {
+    public Pin add(@Validated(Pin.Add.class) @RequestBody Pin pin, HttpServletRequest request) {
 
         // TODO: Better input validation
 

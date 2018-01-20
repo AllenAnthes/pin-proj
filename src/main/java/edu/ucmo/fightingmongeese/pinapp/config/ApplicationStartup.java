@@ -36,7 +36,7 @@ public class ApplicationStartup
 
         random.setSeed("totessecure".getBytes());
 
-        Pin pin = new Pin("Bob's Checking", "192.168.0.22", "bob");
+        Pin pin = new Pin("BobsChecking", "192.168.0.22", "bob");
         int randomPin = random.nextInt(1000000);
         String pinString = String.format("%06d", randomPin);
         pin.setPin(pinString);
@@ -44,7 +44,7 @@ public class ApplicationStartup
         pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
         pinRepository.save(pin);
 
-        pin = new Pin("Sally's Savings", "192.168.0.35", "sally");
+        pin = new Pin("SallysSavings", "192.168.0.35", "sally");
         randomPin = random.nextInt(1000000);
         pinString = String.format("%06d", randomPin);
         pin.setPin(pinString);
