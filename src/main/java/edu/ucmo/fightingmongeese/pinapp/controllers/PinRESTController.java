@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 @RestController
@@ -23,7 +23,7 @@ public class PinRESTController {
     private static final Logger logger = Logger.getLogger(PinRESTController.class.getName());
 
     /**
-     * Method for handling cancel requests.
+     * Method for handling cancel requests.  Works by simply having the user claim their own pin
      *
      * @param pin     The supplied PIN must have the claim_user, pin, and claim_account fields supplied
      * @param request
@@ -36,7 +36,7 @@ public class PinRESTController {
 
         pin = validateCancel(pin.getPin(), pin.getClaim_user());
 
-        pin.setClaim_ip(request.getRemoteAddr());
+        pin.setClaimIp(request.getRemoteAddr());
         pin.setClaim_timestamp(LocalDateTime.now());
 
         pin = pinRepository.save(pin);
@@ -60,7 +60,7 @@ public class PinRESTController {
 
         pin = validateClaim(pin.getPin(), pin.getClaim_user());
 
-        pin.setClaim_ip(request.getRemoteAddr());
+        pin.setClaimIp(request.getRemoteAddr());
         pin.setClaim_timestamp(LocalDateTime.now());
 
         pin = pinRepository.save(pin);
@@ -130,14 +130,9 @@ public class PinRESTController {
         if (newPin.getExpire_timestamp() != null && newPin.getExpire_timestamp().isBefore(LocalDateTime.now())) {
             throw new InvalidExpireTimeException(newPin.getExpire_timestamp());
         }
-        // This can be done better with a custom SQL queury.
-        // Something like "Select * where accounts is _ and expire_time = NULL"
-        // TODO: Do that ^
-        List<Pin> pins = pinRepository.findByAccount(newPin.getAccount());
-        for (Pin pin : pins) {
-            if (pin.getClaim_timestamp() == null) {
-                throw new AccountHasActivePinException(pin.getAccount(), pin.getExpire_timestamp());
-            }
+        Optional<Pin> pin = pinRepository.findActivePin(newPin.getAccount());
+        if (pin.isPresent()) {
+            throw new AccountHasActivePinException(pin.get().getAccount(), pin.get().getExpire_timestamp());
         }
     }
 

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 public class AccountHasActivePinException extends RuntimeException {
 
     public AccountHasActivePinException(String PIN, LocalDateTime expire_timestamp) {
-        super("Account has a currently active PIN, only one allowed at a time.\n" +
-                String.format("Active PIN: %s | Active PIN expire time: %s", PIN, expire_timestamp));
+        super("Account has a currently active PIN, only one allowed at a time." +
+                String.format(" Active PIN: %s | Active PIN expire time: %s", PIN, expire_timestamp));
     }
 }

@@ -62,8 +62,8 @@ public class Pin {
     @Column(name = "claim_user")
     private String claim_user;
 
-    @Column(name = "claim_ip")
-    private String claim_ip;
+    @Column(name = "claimIp")
+    private String claimIp;
 
     public Pin() {
     } //Empty Constructor for JPA
