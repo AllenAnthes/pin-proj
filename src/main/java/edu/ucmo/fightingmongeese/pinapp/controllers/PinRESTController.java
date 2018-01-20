@@ -21,14 +21,35 @@ public class PinRESTController {
 
     private static final Logger logger = Logger.getLogger(PinRESTController.class.getName());
 
+    /**
+     * Method for handling cancel requests.
+     *
+     * @param pin     The supplied PIN must have the claim_user, pin, and claim_account fields supplied
+     * @param request
+     */
+    @RequestMapping(value = "/cancel", method = RequestMethod.POST)
+    public Pin cancel(@RequestBody Pin pin, HttpServletRequest request) {
+
+        logger.info(String.format("Cancel request received from user: %s at %s with PIN: %s for account: %s",
+                pin.getClaim_user(), request.getRemoteAddr(), pin.getPin(), pin.getAccount()));
+
+        pin = validateCancel(pin.getPin(), pin.getClaim_user());
+
+        pin.setClaim_ip(request.getRemoteAddr());
+        pin.setClaim_timestamp(LocalDateTime.now());
+
+        pin = pinRepository.save(pin);
+        logger.info(String.format("Pin successfully canceled: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
+        return pin;
+    }
 
     /**
-     * Method for handling PIN claim attempts.  Currently the account and requested PIN are passed in the URL
-     * and the user is sent as JSON in the body.
-     *
+     * Method for handling PIN claim attempts.  All data is passed in the request body via JSON
+     * <p>
      * Besides basic param validation there is currently no authentication implemented.
      *
-     * @param request       Request metadata from Spring
+     * @param pin
+     * @param request Request metadata from Spring
      */
     @RequestMapping(value = "/claim", method = RequestMethod.POST)
     public Pin claim(@RequestBody Pin pin, HttpServletRequest request) {
@@ -49,17 +70,15 @@ public class PinRESTController {
     /**
      * Method for handling adding new one-time-use PINs to the database.
      *
-     * @param pin
-     *      The PIN will be supplied to the method via the Request Body in JSON.
-     *      e.g.:
-     *              {
-     *              "account": "bob",
-     *              "create_user": "user"
-     *              }
-     *
-     *      Spring/JPA handles the translation between JSON and a Java object.
-     *
-     * @param request   Request metadata from Spring
+     * @param pin     The PIN will be supplied to the method via the Request Body in JSON.
+     *                e.g.:
+     *                {
+     *                "account": "bob",
+     *                "create_user": "user"
+     *                }
+     *                <p>
+     *                Spring/JPA handles the translation between JSON and a Java object.
+     * @param request Request metadata from Spring
      */
     @RequestMapping(value = "/new", method = RequestMethod.POST)
     public Pin add(@RequestBody Pin pin, HttpServletRequest request) {
@@ -97,6 +116,15 @@ public class PinRESTController {
         return pin;
     }
 
+    private Pin validateCancel(String pin, String user) {
+
+
+        Pin res = pinRepository.findByPin(pin).orElseThrow(
+                () -> new PinNotFoundException(pin));
+        res.setClaim_user(user);
+        return res;
+    }
+
     private void validateNewPin(Pin newPin) {
         if (newPin.getExpire_timestamp() != null && newPin.getExpire_timestamp().isBefore(LocalDateTime.now())) {
             throw new InvalidExpireTimeException(newPin.getExpire_timestamp());
@@ -116,8 +144,9 @@ public class PinRESTController {
      * Utility method for validating the correct params are sent to the claim handler.  If request is found to
      * be invalid method returns an exception to be logged and Spring sends the requester an appropriate
      * HTTP response code and message.
-     *
+     * <p>
      * If request params are all valid the method returns the current PIN from the persistence repository
+     *
      * @param requestPin
      * @param claim_user
      */
