@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.logging.Logger;
 
 @RestController
@@ -64,16 +65,10 @@ public class PinRESTController {
     public Pin add(@RequestBody Pin pin, HttpServletRequest request) {
 
         // TODO: Better input validation
-        // TODO: Check if active PIN exists for account
 
-        if (pin.getExpire_timestamp() != null && pin.getExpire_timestamp().isBefore(LocalDateTime.now())) {
-            throw new InvalidExpireTimeException(pin.getExpire_timestamp());
-        }
-
-
+        validateNewPin(pin);
 
         SecureRandom random = new SecureRandom();
-
         // TODO: !! DON'T LET THIS GO TO PROD WITH THE SEED !!
         random.setSeed("totessecure".getBytes());
 
@@ -100,6 +95,21 @@ public class PinRESTController {
         pin = this.pinRepository.save(pin);
         logger.info(String.format("New PIN successfully saved: Account: %s | PIN: %s | IP: %s", pin.getAccount(), pin.getPin(), request.getRemoteAddr()));
         return pin;
+    }
+
+    private void validateNewPin(Pin newPin) {
+        if (newPin.getExpire_timestamp() != null && newPin.getExpire_timestamp().isBefore(LocalDateTime.now())) {
+            throw new InvalidExpireTimeException(newPin.getExpire_timestamp());
+        }
+        // This can be done better with a custom SQL queury.
+        // Something like "Select * where accounts is _ and expire_time = NULL"
+        // TODO: Do that ^
+        List<Pin> pins = pinRepository.findByAccount(newPin.getAccount());
+        for (Pin pin : pins) {
+            if (pin.getClaim_timestamp() == null) {
+                throw new AccountHasActivePinException(pin.getAccount(), pin.getExpire_timestamp());
+            }
+        }
     }
 
     /**
