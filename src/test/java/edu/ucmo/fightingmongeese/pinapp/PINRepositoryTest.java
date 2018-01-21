@@ -24,14 +24,9 @@ public class PINRepositoryTest {
     @Test
     public void whenGetOne_thenReturnPIN() {
 
-        byte[] seed = "seed".getBytes();
-        SecureRandom random = new SecureRandom(seed);
-
         Pin pin = new Pin("Bob", "192.168.0.22", "admin");
         pin.setOid(1);
-        int randomPin = random.nextInt(1000000);
-        String pinString = String.format("%05d", randomPin);
-        pin.setPin(pinString);
+        pin.setPin("123456");
         pin.setCreate_timestamp(LocalDateTime.now());
         pin.setExpire_timestamp(LocalDateTime.now().plusDays(2));
         pinRepository.save(pin);

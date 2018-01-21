@@ -26,6 +26,10 @@ public class PinService {
      */
     public Pin add(Pin pin, String remoteAddr) {
 
+
+        // TODO: Better input validation
+        validateNewPin(pin);
+
         pin.setCreate_ip(remoteAddr);
         SecureRandom random = new SecureRandom();
         // TODO: !! DON'T LET THIS GO TO PROD WITH THE SEED !!

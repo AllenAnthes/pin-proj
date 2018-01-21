@@ -75,6 +75,28 @@ public class Pin {
         this.create_user = create_user;
     }
 
+    // Constructor for tests
+    public Pin(String account, String create_ip, String create_user, String claimIp) {
+        this.account = account;
+        this.create_ip = create_ip;
+        this.create_user = create_user;
+        this.claimIp = claimIp;
+    }
+
+    public Pin(String account, String pin, String create_ip, String create_user, LocalDateTime create_timestamp, LocalDateTime expire_timestamp) {
+        this.account = account;
+        this.pin = pin;
+        this.create_ip = create_ip;
+        this.create_user = create_user;
+        this.create_timestamp = create_timestamp;
+        this.expire_timestamp = expire_timestamp;
+    }
+
+    public Pin(String account, String create_user) {
+        this.account = account;
+        this.create_user = create_user;
+    }
+
     public interface Add {
     }
 

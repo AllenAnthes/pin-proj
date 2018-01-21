@@ -35,9 +35,6 @@ public class PinController {
     @PostMapping(value = "/new")
     public Pin add(@Validated(Pin.Add.class) @RequestBody Pin pin, HttpServletRequest request) {
 
-        // TODO: Better input validation
-        pinService.validateNewPin(pin);
-
         logger.info("New PIN received from User: {} at {} -- Account: {} | PIN: {}",
                 pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin());
 
