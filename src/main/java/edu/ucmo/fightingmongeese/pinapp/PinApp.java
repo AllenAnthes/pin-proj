@@ -10,5 +10,4 @@ public class PinApp {
 	public static void main(String[] args) {
 		SpringApplication.run(PinApp.class, args);
 	}
-
 }

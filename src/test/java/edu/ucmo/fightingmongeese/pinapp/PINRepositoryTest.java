@@ -23,7 +23,6 @@ public class PINRepositoryTest {
 
     @Test
     public void whenGetOne_thenReturnPIN() {
-
         Pin pin = new Pin("Bob", "192.168.0.22", "admin");
         pin.setOid(1);
         pin.setPin("123456");

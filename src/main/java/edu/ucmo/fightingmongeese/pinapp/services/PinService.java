@@ -1,6 +1,7 @@
 package edu.ucmo.fightingmongeese.pinapp.services;
 
 
+import edu.ucmo.fightingmongeese.pinapp.components.DateTime;
 import edu.ucmo.fightingmongeese.pinapp.exceptions.*;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
@@ -8,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -16,6 +16,10 @@ public class PinService {
 
     @Autowired
     PinRepository pinRepository;
+
+    @Autowired
+    private DateTime dateTime;
+
 
     /**
      * Method containing the business logic for adding a new PIN to the database.
@@ -45,11 +49,11 @@ public class PinService {
         } while (notUnique);
 
         pin.setPin(pinString);
-        pin.setCreate_timestamp(LocalDateTime.now());
+        pin.setCreate_timestamp(dateTime.now());
 
         if (pin.getExpire_timestamp() == null) {
             // Default expire time set to 30 minutes
-            pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
+            pin.setExpire_timestamp(dateTime.now().plusMinutes(30));
         }
         pin = this.pinRepository.save(pin);
         return pin;
@@ -66,7 +70,7 @@ public class PinService {
     public Pin claim(Pin pin, String remoteAddr) {
         pin = validateClaim(pin.getPin(), pin.getClaim_user());
         pin.setClaimIp(remoteAddr);
-        pin.setClaim_timestamp(LocalDateTime.now());
+        pin.setClaim_timestamp(dateTime.now());
         return pinRepository.save(pin);
     }
 
@@ -82,7 +86,7 @@ public class PinService {
         pin = validateCancel(pin.getPin(), pin.getClaim_user());
 
         pin.setClaimIp(remoteAddr);
-        pin.setClaim_timestamp(LocalDateTime.now());
+        pin.setClaim_timestamp(dateTime.now());
 
         return pinRepository.save(pin);
     }
@@ -119,7 +123,7 @@ public class PinService {
         );
         pin.setClaim_user(claim_user);
 
-        if (LocalDateTime.now().isAfter(pin.getExpire_timestamp())) {
+        if (dateTime.now().isAfter(pin.getExpire_timestamp())) {
             throw new ExpiredPinException(requestPin);
         }
 
@@ -142,7 +146,7 @@ public class PinService {
     }
 
     public void validateNewPin(Pin newPin) {
-        if (newPin.getExpire_timestamp() != null && newPin.getExpire_timestamp().isBefore(LocalDateTime.now())) {
+        if (newPin.getExpire_timestamp() != null && newPin.getExpire_timestamp().isBefore(dateTime.now())) {
             throw new InvalidExpireTimeException(newPin.getExpire_timestamp());
         }
         Optional<Pin> pin = pinRepository.findActivePin(newPin.getAccount());
