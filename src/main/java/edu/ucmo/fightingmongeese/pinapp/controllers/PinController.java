@@ -1,143 +1,101 @@
 package edu.ucmo.fightingmongeese.pinapp.controllers;
 
-
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
-import edu.ucmo.fightingmongeese.pinapp.models.PinDTO;
-import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
+import edu.ucmo.fightingmongeese.pinapp.services.PinService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
-/**
- * Temporary Controller for the Thymeleaf based front-end
- * Will most likely be removed before prod.  No judging my code here
- */
-@Controller
+@RestController
+@RequestMapping("/api")
 public class PinController {
 
     @Autowired
-    PinRepository pinRepository;
+    private PinService pinService;
 
-    private static final Logger logger = LoggerFactory.getLogger(PinRESTController.class);
+    private static final Logger logger = LoggerFactory.getLogger(PinController.class);
 
     /**
-     * Method for routing new submissions from the Thymeleaf UI to the REST endpoint
+     * Method for handling adding new one-time-use PINs to the database.
      *
-     * @param pin     DTO that holds the info to be transferred to the actual endpoint.
-     *                Had to use a hack to get the Date and Time to properly translate
-     * @param request
+     * @param pin     The PIN will be supplied to the method via the Request Body in JSON.
+     *                e.g.:
+     *                {
+     *                "account": "bob",
+     *                "create_user": "user"
+     *                }
+     *                The client can optionally provide an expiration datetime
+     *                which defaults to 30 minutes if not given
+     * @param request Request metadata for extracting IP Address
      */
-    @RequestMapping(value = "pins/new", method = RequestMethod.POST)
-    public String add(@ModelAttribute PinDTO pin, HttpServletRequest request) {
+    @PostMapping(value = "/new")
+    public Pin add(@Validated(Pin.Add.class) @RequestBody Pin pin, HttpServletRequest request) {
 
-        String baseUrl = String.format("%s://%s:%d/api/", request.getScheme(),
-                request.getServerName(), request.getServerPort());
-        String url = baseUrl + "/new";
+        // TODO: Better input validation
+        pinService.validateNewPin(pin);
 
-        Map<String, String> payload = new HashMap<>();
-        payload.put("account", pin.getAccount());
-        payload.put("create_user", request.getUserPrincipal().getName());
+        logger.info("New PIN received from User: {} at {} -- Account: {} | PIN: {}",
+                pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin());
 
-        if (pin.getExpire_date() != null && pin.getExpire_time() != null) {
-            payload.put("expire_timestamp", String.valueOf(LocalDateTime.of(pin.getExpire_date(), pin.getExpire_time())));
-        } else if (pin.getExpire_date() != null) {
-            payload.put("expire_timestamp", String.valueOf(pin.getExpire_date()));
-        }
-
-        String res = this.getRESTResponse(url, payload);
-        return "redirect:/pins/list";
+        Pin result = pinService.add(pin, request.getRemoteAddr());
+        logger.info("New PIN successfully saved: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
+        return result;
     }
 
     /**
-     * Method for displaying PINs currently in the database as a table
+     * Method for handling PIN claim attempts.  All data is passed in the request body via JSON
+     * <p>
+     *
+     * @param pin     Java representation of PIN translated from JSON
+     *                The only required fields are account and create_user
+     * @param request Request metadata for extracting IP Address
      */
-    @RequestMapping(value = "pins/list", method = RequestMethod.GET)
-    public String showCredentials(Model model) {
-        List<Pin> pins = pinRepository.findAll();
-        model.addAttribute("pins", pins);
-        PinDTO pin = new PinDTO();
-        pin.setExpire_date(LocalDate.now().plusDays(2));
-        pin.setExpire_time(LocalTime.now());
+    @PostMapping(value = "/claim")
+    public Pin claim(@Validated(Pin.Claim.class) @RequestBody Pin pin, HttpServletRequest request) {
 
+        logger.info("Claim received from user: {} at {} with PIN: {}",
+                pin.getClaim_user(), request.getRemoteAddr(), pin.getPin());
 
-        model.addAttribute("pin", pin);
+        Pin result = pinService.claim(pin, request.getRemoteAddr());
 
-        return "pin-table";
+        logger.info("Pin successfully claimed: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
+
+        return result;
     }
 
     /**
-     * Translates and passes claim request to the actual REST endpoint
+     * Method for handling cancel requests.  Works by simply having the user claim their own pin
      *
-     * @param account
-     * @param user
+     * @param pin     The supplied PIN must have the claim_user, pin, and claim_account fields supplied
+     * @param request Request metadata for extracting IP Address
+     */
+    @PostMapping(value = "/cancel")
+    public Pin cancel(@Validated(Pin.Cancel.class) @RequestBody Pin pin, HttpServletRequest request) {
+
+        logger.info("Cancel request received from user: {} at {} with PIN: {} for account: {}",
+                pin.getClaim_user(), request.getRemoteAddr(), pin.getPin(), pin.getAccount());
+
+        Pin result = pinService.cancel(pin, request.getRemoteAddr());
+
+        logger.info("Pin successfully canceled: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
+        return result;
+    }
+
+
+    /**
+     * Mapping for unclaiming a PIN.  Used for testing/development
+     *
      * @param pin
-     * @param request
      */
-    @RequestMapping(value = "pins/claim/{account}/{pin}/{user}")
-    public String claim(@PathVariable String account, @PathVariable String user, @PathVariable String pin, HttpServletRequest request) {
-
-        Map<String, String> payload = new HashMap<>();
-        payload.put("claim_user", user);
-        payload.put("pin", pin);
-        String baseUrl = String.format("%s://%s:%d/api/claim", request.getScheme(), request.getServerName(), request.getServerPort());
-        this.getRESTResponse(baseUrl, payload);
-        return "redirect:/pins/list";
+    @PostMapping("/unclaim")
+    public Pin unClaim(@RequestBody Pin pin) {
+        pin = pinService.unclaim(pin);
+        return pin;
     }
 
-    /**
-     * Simply deletes the oid given in path from the database
-     *
-     * @param oid
-     */
-    @RequestMapping(value = "pins/delete/{oid}")
-    public String delete(@PathVariable Integer oid, HttpServletRequest request) {
-        Pin pin = pinRepository.getOne(oid);
-        pinRepository.delete(oid);
-
-        logger.info(String.format("PIN deleted: Account: %s | PIN: %s | User: %s | IP: %s",
-                pin.getAccount(), pin.getPin(), request.getUserPrincipal().getName(), request.getRemoteAddr()));
-
-        return "redirect:/pins/list";
-    }
-
-    /**
-     * Utility method for passing requests to the REST endpoints
-     *
-     * @param url    URL of the PinRestController endpoint
-     * @param params A map of the JSON that would be passed to the endpoint
-     */
-    private String getRESTResponse(String url, Map<String, String> params) {
-
-        RestTemplate template = new RestTemplate();
-        HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(params);
-        String response;
-        try {
-
-            ResponseEntity<String> responseEntity = template.exchange(url, HttpMethod.POST, requestEntity, String.class);
-            response = responseEntity.getBody();
-        } catch (Exception e) {
-            response = e.getMessage();
-            logger.warn(response);
-        }
-//        logger.info(response);
-        return response;
-    }
 }
+

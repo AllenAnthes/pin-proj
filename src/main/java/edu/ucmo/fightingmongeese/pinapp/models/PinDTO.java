@@ -10,6 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+/**
+ * Model used as a container for simplifying interaction with the WebGUI.
+ */
 @Data
 @Entity
 public class PinDTO {

@@ -17,14 +17,4 @@ public class HomeController {
     public String login() {
         return "login";
     }
-
-    @GetMapping("/admin")
-    public String admin() {
-        return "admin";
-    }
-
-    @GetMapping("/403")
-    public String error403() {
-        return "403";
-    }
 }
