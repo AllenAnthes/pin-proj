@@ -1,11 +1,11 @@
 package edu.ucmo.fightingmongeese.pinapp;
 
 import edu.ucmo.fightingmongeese.pinapp.components.DateTime;
-import edu.ucmo.fightingmongeese.pinapp.exceptions.AccountHasActivePinException;
-import edu.ucmo.fightingmongeese.pinapp.exceptions.InvalidExpireTimeException;
+import edu.ucmo.fightingmongeese.pinapp.exceptions.*;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import edu.ucmo.fightingmongeese.pinapp.services.PinService;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -33,6 +33,15 @@ public class PinServiceTest {
     @InjectMocks
     private PinService pinService;
 
+    private final LocalDateTime mockedTime = LocalDateTime.ofEpochSecond(10000, 0, ZoneOffset.UTC);
+
+    private String IPV4_LOCALHOST = "127.0.0.1";
+
+
+    @Before
+    public void setupMock() {
+        when(dateTime.now()).thenReturn(mockedTime);
+    }
 
     @Test(expected = InvalidExpireTimeException.class)
     public void test_add_pin_with_invalid_expiration() {
@@ -40,7 +49,6 @@ public class PinServiceTest {
         pin.setExpire_timestamp(LocalDateTime.MIN);
         pinService.add(pin, pin.getCreate_ip());
     }
-
 
 
     @Test(expected = AccountHasActivePinException.class)
@@ -100,29 +108,106 @@ public class PinServiceTest {
 
     @Test
     public void test_add_pin_adds_default_expiration() {
-        LocalDateTime mockedTime = LocalDateTime.ofEpochSecond(10000,0,ZoneOffset.UTC);
-
         Pin pin = getNewPin();
 
         when(pinRepository.findActivePin(any())).thenReturn(Optional.empty());
         when(pinRepository.findByPin(any())).thenReturn((Optional.empty()));
         when(pinRepository.save(pin)).thenReturn(pin);
-        when(dateTime.now()).thenReturn(mockedTime);
 
         Pin result = pinService.add(pin, pin.getCreate_ip());
 
-
         assertEquals(result.getExpire_timestamp(), mockedTime.plusMinutes(30));
-
         verify(pinRepository, times(1)).findByPin(pin.getPin());
         verify(pinRepository, times(1)).save(pin);
         verify(pinRepository, times(1)).findActivePin(any());
 
     }
 
+    @Test(expected = PinNotFoundException.class)
+    public void test_claim_throws_exception_with_invalid_pin() {
+        Pin pin = getClaimPin();
+        when(pinRepository.findByPin(any())).thenReturn(Optional.empty());
 
-    private static Pin getNewPin() {
-        return new Pin("SallysSavings", "127.0.0.1", "sally");
+        pinService.claim(pin, pin.getClaimIp());
     }
 
+    @Test(expected = ExpiredPinException.class)
+    public void test_claim_throws_exception_with_invalid_expiration() {
+        Pin pin = getClaimPin();
+        pin.setExpire_timestamp(LocalDateTime.MIN);
+        when(pinRepository.findByPin(any())).thenReturn(Optional.of(pin));
+
+        pinService.claim(pin, pin.getClaimIp());
+    }
+
+    @Test(expected = PinAlreadyClaimedException.class)
+    public void test_claim_throws_exception_with_claimed_pin() {
+        Pin pin = getClaimPin();
+        pin.setClaim_timestamp(mockedTime);
+        when(pinRepository.findByPin(any())).thenReturn(Optional.of(pin));
+
+        pinService.claim(pin, pin.getClaimIp());
+    }
+
+    @Test(expected = MissingClaimUserException.class)
+    public void test_claim_throws_exception_with_missing_user() {
+        Pin pin = getClaimPin();
+        pin.setClaim_user(null);
+        when(pinRepository.findByPin(any())).thenReturn(Optional.of(pin));
+
+        pinService.claim(pin, pin.getClaimIp());
+    }
+
+    @Test
+    public void test_claim_sets_claim_timestamp_correctly() {
+        Pin pin = getClaimPin();
+        when(pinRepository.findByPin(any())).thenReturn(Optional.of(pin));
+        when(pinRepository.save(pin)).thenReturn(pin);
+
+        Pin result = pinService.claim(pin, pin.getClaimIp());
+
+        assertEquals(result.getClaim_timestamp(), mockedTime);
+    }
+
+    @Test
+    public void test_cancel_works_with_valid_args() {
+        Pin pin = getCancelPin();
+        when(pinRepository.findByPin(any())).thenReturn(Optional.of(pin));
+        when(pinRepository.save(pin)).thenReturn(pin);
+
+        Pin result = pinService.cancel(pin, IPV4_LOCALHOST);
+
+        assertEquals(result.getClaim_timestamp(), mockedTime);
+        assertEquals(result.getClaimIp(), IPV4_LOCALHOST);
+        assertEquals(result.getClaim_user(), getCancelPin().getClaim_user());
+    }
+
+
+    @Test(expected = PinNotFoundException.class)
+    public void test_cancel_throws_exception_with_invalid_pin() {
+        Pin pin = getCancelPin();
+        when(pinRepository.findByPin(any())).thenReturn(Optional.empty());
+
+        pinService.cancel(pin, IPV4_LOCALHOST);
+    }
+
+
+    private Pin getNewPin() {
+        return new Pin("SallysSavings", IPV4_LOCALHOST, "sally");
+    }
+
+    private Pin getCancelPin() {
+        Pin pin = new Pin();
+        pin.setPin("123456");
+        return pin;
+    }
+
+    private Pin getClaimPin() {
+        Pin pin = new Pin();
+        pin.setClaimIp("127.0.0.1");
+        pin.setPin("123456");
+        pin.setClaim_user("bob");
+        pin.setExpire_timestamp(mockedTime.plusHours(5));
+        return pin;
+    }
 }

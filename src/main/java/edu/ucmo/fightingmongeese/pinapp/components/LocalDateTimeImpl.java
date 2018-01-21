@@ -5,6 +5,9 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;
 
 /**
+ *  Wraps LocalDateTime so it can be injected
+ *  at runtime.
+ *
  *  Component is necessary in order to create tests
  *  that can be mocked and are not dependant on
  *  system time
