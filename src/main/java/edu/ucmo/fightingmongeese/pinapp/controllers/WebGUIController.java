@@ -31,7 +31,7 @@ import java.util.Map;
  * Will most likely be removed before prod.  No judging my code here
  */
 @Controller
-public class PinController {
+public class WebGUIController {
 
     @Autowired
     PinRepository pinRepository;

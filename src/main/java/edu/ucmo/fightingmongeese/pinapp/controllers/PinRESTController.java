@@ -6,6 +6,8 @@ import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
+@EnableResourceServer
 public class PinRESTController {
 
     @Autowired
@@ -54,6 +57,7 @@ public class PinRESTController {
      * @param request Request metadata from Spring
      */
     @PostMapping(value = "/claim")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Pin claim(@Validated(Pin.Claim.class) @RequestBody Pin pin, HttpServletRequest request) {
 
         logger.info("Claim received from user: {} at {} with PIN: {}",
