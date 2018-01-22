@@ -39,7 +39,7 @@ public class PinController {
                 pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin());
 
         Pin result = pinService.add(pin, request.getRemoteAddr());
-        logger.info("New PIN successfully saved: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
+        logger.info("New PIN successfully saved: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());
         return result;
     }
 
@@ -59,7 +59,7 @@ public class PinController {
 
         Pin result = pinService.claim(pin, request.getRemoteAddr());
 
-        logger.info("Pin successfully claimed: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
+        logger.info("Pin successfully claimed: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());
 
         return result;
     }
@@ -78,7 +78,7 @@ public class PinController {
 
         Pin result = pinService.cancel(pin, request.getRemoteAddr());
 
-        logger.info("Pin successfully canceled: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
+        logger.info("Pin successfully canceled: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());
         return result;
     }
 }

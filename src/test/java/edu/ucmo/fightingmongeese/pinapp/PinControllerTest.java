@@ -46,7 +46,7 @@ public class PinControllerTest {
     @Test
     public void test_add_pin_success() throws Exception {
         Pin pin = getNewPin();
-        when(pinService.add(pin, pin.getCreate_ip())).thenReturn(null);
+        when(pinService.add(pin, pin.getCreate_ip())).thenReturn(getCompletePin());
         mockMvc.perform(
                 post("/api/new")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -58,7 +58,7 @@ public class PinControllerTest {
     @Test
     public void test_claim_pin_success() throws Exception {
         Pin pin = getClaimPin();
-        when(pinService.claim(pin, pin.getClaimIp())).thenReturn(null);
+        when(pinService.claim(pin, pin.getClaimIp())).thenReturn(getCompletePin());
         mockMvc.perform(
                 post("/api/claim")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -70,7 +70,7 @@ public class PinControllerTest {
     @Test
     public void test_cancel_pin_success() throws Exception {
         Pin pin = getClaimPin();
-        when(pinService.claim(pin, pin.getClaimIp())).thenReturn(null);
+        when(pinService.cancel(pin, pin.getClaimIp())).thenReturn(getCompletePin());
         mockMvc.perform(
                 post("/api/cancel")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -87,6 +87,14 @@ public class PinControllerTest {
 
     private static Pin getClaimPin() {
         Pin pin = new Pin();
+        pin.setPin("123456");
+        pin.setClaim_user("Bob");
+        pin.setClaimIp("127.0.0.1");
+        return pin;
+    }
+
+    private static Pin getCompletePin() {
+        Pin pin = new Pin("SallysSavings", "127.0.0.1", "sally");
         pin.setPin("123456");
         pin.setClaim_user("Bob");
         pin.setClaimIp("127.0.0.1");
