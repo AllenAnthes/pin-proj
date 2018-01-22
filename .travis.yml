@@ -1,16 +1,13 @@
-
 language: java
-
 jdk:
-  - oraclejdk8
-
+- oraclejdk8
 services:
-  - mysql
-
+- mysql
 before_install:
-  - chmod +x mvnw
-
-
+- chmod +x mvnw
 cache:
   directories:
-    - "$HOME/.m2"
+  - "$HOME/.m2"
+deploy:
+  api_key:
+    secure: dtfhMnX/rbontiq7Rgm2nFhTohfsXRvI6yGY8phYmTIaLCEg47COl5rirFA7M7ih+SOByukOSW/6XbzOW07JCFZAPt+Gm2FM3DD5S1UnsvvR3Kw37NE7Ic2ywHFD9G1qqlWcZs/ueUO1mNgY9o0vCOyp7EHF3A9xacWLJvHXKpMpFPobC+kF8JefvphOpto2FJ5FLswzlPgPKddMOZjMXBfJPxaqdF2hWGl86ipVmGCxL+IWu4meo5blOo435C6e3N8IPFn2nkMOmfzn4QLjfrvvzGKsilJ/RcXzQnj2slvoF1NOYjCv2U0Xk/o0l3xbjpRwMmQrqhTeg+N3r0099/TnWSSPYO6tDStVK+0eFpAj590UR21C6es6OsFso3DUi1LEKcLP9H5KHcSUXUhfnpiXNH3Ar4VAGCfAe33tnFw1d/vl56ajOuv/9asawNxUW5EnwjMfLZSs0CS1hIWww+Ec2yTytMXHzqOVrFUiUtX5peVU77qEBcll5ivo5Pr03hFpuqdQXs/rSpIzcFa4BmJ8ndhKJK/gS1wc6U5xhX1xYygIUp8ZXq9hR0rAQvOTcDvlw1nHoB0n4aac55dXgFnRJ9lhhMAVALNpre+oFWa7gsF9g8IAYfXLmsjXNAWSTB3c8zmP9tPTlIP5TG4rkgXlIDMr3JjgQ8jmbsxNMHs=
