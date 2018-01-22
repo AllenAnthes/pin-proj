@@ -1,5 +1,6 @@
 package edu.ucmo.fightingmongeese.pinapp.controllers;
 
+import edu.ucmo.fightingmongeese.pinapp.exceptions.BaseCustomRequestException;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.services.PinService;
 import org.slf4j.Logger;
@@ -9,6 +10,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
@@ -80,6 +83,12 @@ public class PinController {
 
         logger.info("Pin successfully canceled: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());
         return result;
+    }
+
+    @ExceptionHandler(BaseCustomRequestException.class)
+    public void handleExceptions(BaseCustomRequestException ex, HttpServletResponse response) throws IOException {
+        response.sendError(ex.status.value(), ex.getMessage());
+        logger.warn(ex.getMessage());
     }
 }
 
