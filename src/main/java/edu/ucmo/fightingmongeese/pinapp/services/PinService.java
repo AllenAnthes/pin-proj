@@ -91,21 +91,6 @@ public class PinService {
         return pinRepository.save(pin);
     }
 
-    /**
-     * Temporary method for resetting a PIN back to
-     * unclaimed status for testing purposes
-     *
-     * @param pin
-     */
-    public Pin unclaim(Pin pin) {
-
-        pin = pinRepository.findOne(pin.getOid());
-        pin.setClaim_user(null);
-        pin.setClaim_timestamp(null);
-        pin.setClaimIp(null);
-        return pinRepository.save(pin);
-    }
-
 
     /**
      * The following are utility methods for validating the correct params are sent to the handler.  If request is found to

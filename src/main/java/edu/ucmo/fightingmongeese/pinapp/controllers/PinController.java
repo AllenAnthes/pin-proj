@@ -81,18 +81,5 @@ public class PinController {
         logger.info("Pin successfully canceled: Account: {} | PIN: {} | IP: {}", pin.getAccount(), pin.getPin(), request.getRemoteAddr());
         return result;
     }
-
-
-    /**
-     * Mapping for unclaiming a PIN.  Used for testing/development
-     *
-     * @param pin
-     */
-    @PostMapping("/unclaim")
-    public Pin unClaim(@RequestBody Pin pin) {
-        pin = pinService.unclaim(pin);
-        return pin;
-    }
-
 }
 
