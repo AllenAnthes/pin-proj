@@ -8,10 +8,11 @@ before_install:
 cache:
   directories:
     - "$HOME/.m2"
-deploy:
-  provider: heroku
-  api_key:
-    secure: aQHkUJYu4Lc5McQpccU5UNwFHrXd6ZCXtXXlBkRIbIYZ9PIfisxSvXJU3haX3yg3H7sGKCYchhdN+57ftHhQZX5VhWGPTsMNrVwpC9FnHQhozIkPBbOGzpzo/2dNoy66gjz/pDi2B1vl26jsqS9fXmBiNlxOG5+7ZSM9zJwzeXX/mn/xjRje1WEvwIZYc0B/E947aNx4fD1NSgP1v46y8xvsN+9NCeUaeYIeGnu+cjfCG5XSLkzIs2VGE6qdcsT0zdai9aoXakcQ8bAvIQA0woe23sNpNrh0BRh1J8vCHdDAOZ5OVWEgrq6H+rmRMXQtiVk6uhHVSOFdTciSnyVqPSyVdeTVgIM23WfDp8+TMPQFqjro1S4UfXADappQv2LV4ucI98OrhFP9lWs+P7bGpS/K/xZmIdXgAd+vfCrozUxjGlgwjH/yGwkaNZ7/PaMMWI21deJFh8PA+KsSGZfAVmI0mR6DJJoTlZQdSXBLA+IgRYzULGK/y4GOThiFDiytJmnDnD+QFgh4MBlvwqlzzCW0mcSMnKrIx+pZymSla+z9h3pnl81Gz5fuv4lZOMnnjIyCHWS4avYdIRCFm1bBvDq5PlErAOTcu1GXgeFHLq4v1qRAW1epVpA2T2jfi7tksGIa7abSctiujEGAryVDBpcOJMR6c0g7WdVJHNOxQbc=
-  app: pin-project
-  on:
-    repo: AllenAnthes/pin-proj
+
+#deploy:
+#  provider: heroku
+#  api_key:
+#    secure: aQHkUJYu4Lc5McQpccU5UNwFHrXd6ZCXtXXlBkRIbIYZ9PIfisxSvXJU3haX3yg3H7sGKCYchhdN+57ftHhQZX5VhWGPTsMNrVwpC9FnHQhozIkPBbOGzpzo/2dNoy66gjz/pDi2B1vl26jsqS9fXmBiNlxOG5+7ZSM9zJwzeXX/mn/xjRje1WEvwIZYc0B/E947aNx4fD1NSgP1v46y8xvsN+9NCeUaeYIeGnu+cjfCG5XSLkzIs2VGE6qdcsT0zdai9aoXakcQ8bAvIQA0woe23sNpNrh0BRh1J8vCHdDAOZ5OVWEgrq6H+rmRMXQtiVk6uhHVSOFdTciSnyVqPSyVdeTVgIM23WfDp8+TMPQFqjro1S4UfXADappQv2LV4ucI98OrhFP9lWs+P7bGpS/K/xZmIdXgAd+vfCrozUxjGlgwjH/yGwkaNZ7/PaMMWI21deJFh8PA+KsSGZfAVmI0mR6DJJoTlZQdSXBLA+IgRYzULGK/y4GOThiFDiytJmnDnD+QFgh4MBlvwqlzzCW0mcSMnKrIx+pZymSla+z9h3pnl81Gz5fuv4lZOMnnjIyCHWS4avYdIRCFm1bBvDq5PlErAOTcu1GXgeFHLq4v1qRAW1epVpA2T2jfi7tksGIa7abSctiujEGAryVDBpcOJMR6c0g7WdVJHNOxQbc=
+#  app: pin-project
+#  on:
+#    repo: AllenAnthes/pin-proj
