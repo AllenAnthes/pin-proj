@@ -1,6 +1,8 @@
 package edu.ucmo.fightingmongeese.pinapp.validators;
 
 import edu.ucmo.fightingmongeese.pinapp.components.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
@@ -12,6 +14,9 @@ public class ExpireTimeValidator implements ConstraintValidator<ExpireTime, Loca
     @Autowired
     private DateTime dateTime;
 
+    private static final Logger logger = LoggerFactory.getLogger(ExpireTimeValidator.class);
+
+
     public ExpireTimeValidator() {}
 
 
@@ -19,6 +24,10 @@ public class ExpireTimeValidator implements ConstraintValidator<ExpireTime, Loca
     }
 
     public boolean isValid(LocalDateTime obj, ConstraintValidatorContext context) {
-        return (obj == null || obj.isAfter(dateTime.now()));
+        if (obj == null || obj.isAfter(dateTime.now())) {
+            return true;
+        }
+        logger.warn("PIN received with invalid expire time: {}", obj );
+        return false;
     }
 }

@@ -1,18 +1,14 @@
 language: java
 jdk:
-  - oraclejdk8
+- oraclejdk8
 services:
-  - mysql
+- mysql
 before_install:
-  - chmod +x mvnw
+- chmod +x mvnw
 cache:
   directories:
-    - "$HOME/.m2"
+  - "$HOME/.m2"
 
-#deploy:
-#  provider: heroku
-#  api_key:
-#    secure: aQHkUJYu4Lc5McQpccU5UNwFHrXd6ZCXtXXlBkRIbIYZ9PIfisxSvXJU3haX3yg3H7sGKCYchhdN+57ftHhQZX5VhWGPTsMNrVwpC9FnHQhozIkPBbOGzpzo/2dNoy66gjz/pDi2B1vl26jsqS9fXmBiNlxOG5+7ZSM9zJwzeXX/mn/xjRje1WEvwIZYc0B/E947aNx4fD1NSgP1v46y8xvsN+9NCeUaeYIeGnu+cjfCG5XSLkzIs2VGE6qdcsT0zdai9aoXakcQ8bAvIQA0woe23sNpNrh0BRh1J8vCHdDAOZ5OVWEgrq6H+rmRMXQtiVk6uhHVSOFdTciSnyVqPSyVdeTVgIM23WfDp8+TMPQFqjro1S4UfXADappQv2LV4ucI98OrhFP9lWs+P7bGpS/K/xZmIdXgAd+vfCrozUxjGlgwjH/yGwkaNZ7/PaMMWI21deJFh8PA+KsSGZfAVmI0mR6DJJoTlZQdSXBLA+IgRYzULGK/y4GOThiFDiytJmnDnD+QFgh4MBlvwqlzzCW0mcSMnKrIx+pZymSla+z9h3pnl81Gz5fuv4lZOMnnjIyCHWS4avYdIRCFm1bBvDq5PlErAOTcu1GXgeFHLq4v1qRAW1epVpA2T2jfi7tksGIa7abSctiujEGAryVDBpcOJMR6c0g7WdVJHNOxQbc=
-#  app: pin-project
-#  on:
-#    repo: AllenAnthes/pin-proj
+notifications:
+  slack:
+    secure: qQsPn9t9g0UCtShgJkaWpoX5WAoqbT77Y+yW8nNVx8JSg7f9+axoqFpdnbxxx676ERlAmqS4BkNzKPJgAvA86E+py2JQj0BzSX3JuIKHeBLc1whb2YDwlh97I+nU13OGGpAx5/SSCTE37U6dIlgiAF53RDKBMM0Rsuvkz7DdlfGrtYRYauUPrMwG8SXA2Oqg+QA0EYEKCMEOB48qmY3j9bIQ6YOR53h6s8GBYj71xKwDjgXuFaYP4PvubF4cKX+KLi1XOtZQcJQ6YMgGt7ea52ZVkKrh132IX5Y8isUeDwY4Nz7WQQJXyZhqOrctU9Ii3FF+TfwtMV/xLSmsC442hp0liTwKViHX/HGK1GOFO9XnCzGk6FkGKTG5aW5ozOzY5hQBDJwFT+eK/EPaukkhEnha1XrU24y/FCeTr+GFamzBNrhnvWnGCTCEFztY2IUJezQ2f9+7rLwi55n10M/Xa8yMeClpvet8zL5BfBbt4bl8bbtlJyzuO0X+HMx4BiN0n327suOxr9D2LmXkvxpx3XtmHD+Jm4gzZy3mmaERRE+ufa+thyAsGtsFffxWP++g/WRZD9C+SeTSATss929OYU5MPPvJoYHEjTmfZic1YH1T0iEBrNcEOG9fFj2X8Gll8dTKzNnHovmsFAaPc/TS1vJ0K0A+dWktzFuqfhaZssA=

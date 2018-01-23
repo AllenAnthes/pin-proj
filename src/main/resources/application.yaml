@@ -22,7 +22,7 @@ spring.jpa:
 
 spring.data.rest.base-path: /api
 
-
+spring.jpa.properties.javax.persistence.validation.mode: none
 
 # optional in-memory h2 settings for testing if mysql db is unavailable
 #

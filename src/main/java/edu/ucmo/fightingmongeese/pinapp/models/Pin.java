@@ -1,6 +1,9 @@
 package edu.ucmo.fightingmongeese.pinapp.models;
 
+import edu.ucmo.fightingmongeese.pinapp.validators.AccountRequired;
+import edu.ucmo.fightingmongeese.pinapp.validators.CreateUserRequired;
 import edu.ucmo.fightingmongeese.pinapp.validators.ExpireTime;
+import edu.ucmo.fightingmongeese.pinapp.validators.SingleActivePin;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -19,11 +22,9 @@ public class Pin {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer oid;
 
-    @NotNull(
-            groups = Add.class,
-            message = "Account must be supplied to add new PIN")
-    @Pattern(regexp = "\\p{Alnum}+", message = "Account must be alphanumeric")
     @Column(name = "account", nullable = false)
+    @SingleActivePin(groups = Add.class)
+    @AccountRequired(groups = Add.class)
     private String account;
 
     @NotNull(
@@ -37,10 +38,7 @@ public class Pin {
     @Column(name = "create_ip", nullable = false)
     private String create_ip;
 
-    @NotNull(
-            groups = Add.class,
-            message = "User must be provided in request"
-    )
+    @CreateUserRequired(groups = Add.class)
     @Column(name = "create_user", nullable = false)
     private String create_user;
 

@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Component
 public class ApplicationStartup
-        implements ApplicationListener<ContextRefreshedEvent> {
+        implements ApplicationListener<ApplicationReadyEvent> {
 
     private final PinRepository pinRepository;
 
@@ -33,7 +33,7 @@ public class ApplicationStartup
      * the application is ready to service requests.
      */
     @Override
-    public void onApplicationEvent(final ContextRefreshedEvent event) {
+    public void onApplicationEvent(final ApplicationReadyEvent event) {
 
         SecureRandom random = new SecureRandom();
 

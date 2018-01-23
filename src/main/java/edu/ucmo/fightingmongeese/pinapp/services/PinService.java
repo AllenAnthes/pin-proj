@@ -32,7 +32,7 @@ public class PinService {
 
 
         // TODO: Better input validation
-        validateNewPin(pin);
+//        validateNewPin(pin);
 
         pin.setCreate_ip(remoteAddr);
         SecureRandom random = new SecureRandom();
