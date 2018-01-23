@@ -4,6 +4,7 @@ import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
@@ -11,14 +12,12 @@ import java.util.Optional;
 
 public class SingleActivePinValidator implements ConstraintValidator<SingleActivePin, String> {
 
-    private final PinRepository pinRepository;
+
+    @Autowired
+    public PinRepository pinRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(SingleActivePinValidator.class);
 
-
-    public SingleActivePinValidator(PinRepository pinRepository) {
-        this.pinRepository = pinRepository;
-    }
 
     public void initialize(SingleActivePin constraint) {
     }
