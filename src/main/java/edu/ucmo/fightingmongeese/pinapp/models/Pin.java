@@ -1,5 +1,6 @@
 package edu.ucmo.fightingmongeese.pinapp.models;
 
+import edu.ucmo.fightingmongeese.pinapp.validators.ExpireTime;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -50,6 +51,7 @@ public class Pin {
 
     @Column(name = "expire_timestamp")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @ExpireTime(groups = Add.class)
     private LocalDateTime expire_timestamp;
 
 

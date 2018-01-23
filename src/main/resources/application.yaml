@@ -23,6 +23,7 @@ spring.jpa:
 spring.data.rest.base-path: /api
 
 
+
 # optional in-memory h2 settings for testing if mysql db is unavailable
 #
 #spring.h2.console:

@@ -85,10 +85,17 @@ public class PinController {
         return result;
     }
 
+    /**
+     * Handler for custom exceptions that extend from our BaseCustomRequestException.
+     *
+     * @param ex
+     * @param response
+     * @throws IOException
+     */
     @ExceptionHandler(BaseCustomRequestException.class)
     public void handleExceptions(BaseCustomRequestException ex, HttpServletResponse response) throws IOException {
-        response.sendError(ex.status.value(), ex.getMessage());
         logger.warn(ex.getMessage());
+        response.sendError(ex.status.value(), ex.getMessage());
     }
 }
 

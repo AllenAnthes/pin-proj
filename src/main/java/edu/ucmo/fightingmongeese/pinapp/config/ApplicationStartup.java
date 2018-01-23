@@ -5,8 +5,10 @@ import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 
 @Component
 public class ApplicationStartup
-        implements ApplicationListener<ApplicationReadyEvent> {
+        implements ApplicationListener<ContextRefreshedEvent> {
 
     private final PinRepository pinRepository;
 
@@ -31,7 +33,7 @@ public class ApplicationStartup
      * the application is ready to service requests.
      */
     @Override
-    public void onApplicationEvent(final ApplicationReadyEvent event) {
+    public void onApplicationEvent(final ContextRefreshedEvent event) {
 
         SecureRandom random = new SecureRandom();
 
@@ -62,9 +64,5 @@ public class ApplicationStartup
         pinRepository.save(pin);
 
         logger.info("Database pre-populated with 3 PINs");
-
-
     }
-
-
 }
