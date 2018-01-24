@@ -24,13 +24,13 @@ public class Pin {
     @AccountRequired(groups = Add.class)
     private String account;
 
-//    @NotNull(groups = {Claim.class, Cancel.class},
-//            message = "PIN must be provided in request")
-//    @CheckPinExists(groups = {Claim.class, Cancel.class})
-//    @ClaimBeforeExpiration(groups = Claim.class)
-//    @Unclaimed(groups = Claim.class)
-//    @Pattern(regexp = "\\p{N}+", message = "PIN must be numeric")
-    @PinValidators(groups = {Add.class, Claim.class, Cancel.class})
+    @NotNull(groups = {Claim.class, Cancel.class},
+            message = "PIN must be provided in request")
+    @CheckPinExists(groups = {Claim.class, Cancel.class})
+    @ClaimBeforeExpiration(groups = Claim.class)
+    @Unclaimed(groups = Claim.class)
+    @Pattern(regexp = "\\p{N}+", message = "PIN must be numeric")
+//    @PinValidators(groups = {Add.class, Claim.class, Cancel.class})
     @Column(name = "pin", nullable = false, length = 6, unique = true)
     private String pin;
 

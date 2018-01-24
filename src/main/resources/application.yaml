@@ -14,7 +14,7 @@ spring.datasource:
   username: ${JDBC_DATABASE_USERNAME}
   password: ${JDBC_DATABASE_PASSWORD}
 
-spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+#spring.jpa.properties.hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
 spring.datasource.initialize: true
 spring.jpa:
   hibernate.ddl-auto: create-drop
@@ -26,9 +26,9 @@ spring.jpa.properties.javax.persistence.validation.mode: none
 
 # optional in-memory h2 settings for testing if mysql db is unavailable
 #
-#spring.h2.console:
-#  enabled: true
-#  path: /h2
+spring.h2.console:
+  enabled: true
+  path: /h2
 #
 #spring.datasource:
 #    url: jdbc:h2:mem:pindb

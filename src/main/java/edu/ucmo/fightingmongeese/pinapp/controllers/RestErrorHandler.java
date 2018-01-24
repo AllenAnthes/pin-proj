@@ -57,7 +57,6 @@ public class RestErrorHandler {
             sb.append(" : ").append(localizedErrorMessage);
             dto.addFieldError(fieldError.getField(), localizedErrorMessage);
         }
-        logger.warn(request.getContextPath(), request.getMethod(), request.getRemoteAddr());
         logger.warn("Received field validation errors from request: " + sb.toString());
 
         return dto;

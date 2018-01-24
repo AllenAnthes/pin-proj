@@ -1,5 +1,6 @@
 package edu.ucmo.fightingmongeese.pinapp.config;
 
+import edu.ucmo.fightingmongeese.pinapp.components.DateTime;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.slf4j.Logger;
@@ -12,7 +13,6 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 
 @Component
 public class ApplicationStartup
@@ -20,12 +20,15 @@ public class ApplicationStartup
 
     private final PinRepository pinRepository;
 
+    private DateTime dateTime;
+
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicationStartup.class);
 
     @Autowired
-    public ApplicationStartup(PinRepository pinRepository) {
+    public ApplicationStartup(PinRepository pinRepository, DateTime dateTime) {
         this.pinRepository = pinRepository;
+        this.dateTime = dateTime;
     }
 
     /**
@@ -43,24 +46,24 @@ public class ApplicationStartup
         int randomPin = random.nextInt(1000000);
         String pinString = String.format("%06d", randomPin);
         pin.setPin(pinString);
-        pin.setCreate_timestamp(LocalDateTime.now());
-        pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
+        pin.setCreate_timestamp(dateTime.now());
+        pin.setExpire_timestamp(dateTime.now().plusMinutes(30));
         pinRepository.save(pin);
 
         pin = new Pin("BobsSavings", "192.168.0.35", "bob");
         int num = 1234;
         pinString = String.format("%06d", num);
         pin.setPin(pinString);
-        pin.setCreate_timestamp(LocalDateTime.now());
-        pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
+        pin.setCreate_timestamp(dateTime.now());
+        pin.setExpire_timestamp(dateTime.now().plusMinutes(30));
         pinRepository.save(pin);
 
         pin = new Pin("SallysSavings", "192.168.0.35", "sally");
         randomPin = random.nextInt(1000000);
         pinString = String.format("%06d", randomPin);
         pin.setPin(pinString);
-        pin.setCreate_timestamp(LocalDateTime.now());
-        pin.setExpire_timestamp(LocalDateTime.now().plusMinutes(30));
+        pin.setCreate_timestamp(dateTime.now());
+        pin.setExpire_timestamp(dateTime.now().plusMinutes(30));
         pinRepository.save(pin);
 
         logger.info("Database pre-populated with 3 PINs");

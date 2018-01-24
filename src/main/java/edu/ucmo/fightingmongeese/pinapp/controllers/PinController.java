@@ -41,6 +41,7 @@ public class PinController {
 
         logger.info("New PIN received from User: {} at {} -- Account: {} | PIN: {}",
                 pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin());
+        pin.setCreate_ip(request.getRemoteAddr());
         Pin result = pinService.add(pin);
         logger.info("New PIN successfully saved: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());
         return result;
