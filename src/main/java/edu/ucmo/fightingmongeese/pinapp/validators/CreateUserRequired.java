@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = CreateUserRequiredValidator.class)
 public @interface CreateUserRequired {
 
-    String message() default "{edu.ucmo.fightmongeese.CreateUser.message}";
+    String message() default "New PINs must supply a create_user";
 
     Class<?>[] groups() default {};
 

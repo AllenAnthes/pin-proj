@@ -14,12 +14,9 @@ import java.util.Optional;
 public interface PinRepository extends JpaRepository<Pin, Integer> {
 
 
-    Optional<Pin> findByAccountAndPin(String account, String pin);
     Optional<Pin> findByPin(String pin);
 
-    //TODO: Check
-    @Query(value = "select p from Pin p where p.account = ?1 and p.claimIp is null")
+    @Query(value = "select p from Pin p where p.account = ?1 and p.claim_ip is null")
     Optional<Pin> findActivePin(String account);
 
-    List<Pin> findByAccount(String account);
 }

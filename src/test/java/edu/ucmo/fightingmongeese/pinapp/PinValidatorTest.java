@@ -7,7 +7,6 @@ import edu.ucmo.fightingmongeese.pinapp.services.PinService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -18,88 +17,68 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.validation.Validator;
 import java.util.Optional;
 
 import static edu.ucmo.fightingmongeese.pinapp.TestUtils.asJsonString;
-import static edu.ucmo.fightingmongeese.pinapp.TestUtils.getClaimPin;
 import static edu.ucmo.fightingmongeese.pinapp.TestUtils.getCompletePin;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.mockito.internal.verification.VerificationModeFactory.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = PinController.class)
-public class PinControllerTest {
+public class PinValidatorTest {
 
     private MockMvc mockMvc;
 
-    @MockBean
-    private PinService pinService;
+    @Autowired
+    private WebApplicationContext webApplicationContext;
 
     @MockBean
-    Validator validator;
+    PinService pinServiceMock;
 
     @MockBean
     PinRepository pinRepository;
-
-    @Autowired
-    private WebApplicationContext wac;
 
 
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders
-                .webAppContextSetup(wac)
+                .webAppContextSetup(webApplicationContext)
                 .build();
     }
 
-    @Test
-    public void test_add_pin_success() throws Exception {
-        Pin pin = getNewPin();
-        when(pinService.add(any(Pin.class))).thenReturn(pin);
+
+    @Test()
+    public void test_add_pin_with_missing_account() throws Exception {
+
+        Pin pin = new Pin();
+        pin.setCreate_user("user");
+        when(pinServiceMock.add(any())).thenReturn(getCompletePin());
         when(pinRepository.findActivePin(any())).thenReturn(Optional.empty());
-//        when(pinRepository.save(any(Pin.class))).thenReturn(pin);
-//        when(pinRepository.save(any())).thenReturn(getNewPin());
         mockMvc.perform(
                 post("/api/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(pin)))
-                .andExpect(status().isOk());
-        verify(pinService, times(1)).add(pin);
+                .andExpect(status().isBadRequest());
     }
 
-    @Test
-    public void test_claim_pin_success() throws Exception {
-        Pin pin = getClaimPin();
-        when(pinService.claim(pin)).thenReturn(getCompletePin());
+    @Test()
+    public void test_add_pin_with_missing_create_user() throws Exception {
+
+        Pin pin = new Pin();
+        pin.setAccount("account");
+        when(pinServiceMock.add(any())).thenReturn(getCompletePin());
+        when(pinRepository.findActivePin(any())).thenReturn(Optional.empty());
         mockMvc.perform(
-                post("/api/claim")
+                post("/api/new")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(asJsonString(pin)))
-                .andExpect(status().isOk());
-        verify(pinService, times(1)).claim(pin);
-    }
-
-    @Test
-    public void test_cancel_pin_success() throws Exception {
-        Pin pin = getClaimPin();
-        when(pinService.cancel(pin)).thenReturn(getCompletePin());
-        mockMvc.perform(
-                post("/api/cancel")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(asJsonString(pin)))
-                .andExpect(status().isOk());
-        verify(pinService, times(1)).cancel(pin);
-    }
-
-
-    private static Pin getNewPin() {
-        return new Pin("SallysSavings2", "127.0.0.1", "sally");
+                .andExpect(status().isBadRequest())
+        .andDo(print());
     }
 
 

@@ -36,7 +36,7 @@ public class TestingController {
         pin = pinRepository.findOne(pin.getOid());
         pin.setClaim_user(null);
         pin.setClaim_timestamp(null);
-        pin.setClaimIp(null);
+        pin.setClaim_ip(null);
         return pinRepository.save(pin);
     }
 

@@ -8,11 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 public class ExpireTimeValidator implements ConstraintValidator<ExpireTime, LocalDateTime> {
 
-    @Autowired
     private DateTime dateTime;
+
+    public ExpireTimeValidator(DateTime dateTime) {
+        this.dateTime = dateTime;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(ExpireTimeValidator.class);
 

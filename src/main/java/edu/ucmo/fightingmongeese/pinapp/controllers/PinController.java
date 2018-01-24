@@ -1,6 +1,5 @@
 package edu.ucmo.fightingmongeese.pinapp.controllers;
 
-import edu.ucmo.fightingmongeese.pinapp.exceptions.BaseCustomRequestException;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.services.PinService;
 import org.slf4j.Logger;
@@ -10,15 +9,17 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 @RestController
 @RequestMapping("/api")
 public class PinController {
 
-    @Autowired
     private PinService pinService;
+
+    @Autowired
+    public PinController(PinService pinService) {
+        this.pinService = pinService;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(PinController.class);
 
@@ -40,8 +41,7 @@ public class PinController {
 
         logger.info("New PIN received from User: {} at {} -- Account: {} | PIN: {}",
                 pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin());
-
-        Pin result = pinService.add(pin, request.getRemoteAddr());
+        Pin result = pinService.add(pin);
         logger.info("New PIN successfully saved: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());
         return result;
     }
@@ -59,8 +59,8 @@ public class PinController {
 
         logger.info("Claim received from user: {} at {} with PIN: {}",
                 pin.getClaim_user(), request.getRemoteAddr(), pin.getPin());
-
-        Pin result = pinService.claim(pin, request.getRemoteAddr());
+        pin.setClaim_ip(request.getRemoteAddr());
+        Pin result = pinService.claim(pin);
 
         logger.info("Pin successfully claimed: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());
 
@@ -79,23 +79,11 @@ public class PinController {
         logger.info("Cancel request received from user: {} at {} with PIN: {} for account: {}",
                 pin.getClaim_user(), request.getRemoteAddr(), pin.getPin(), pin.getAccount());
 
-        Pin result = pinService.cancel(pin, request.getRemoteAddr());
+        pin.setClaim_ip(request.getRemoteAddr());
+        Pin result = pinService.cancel(pin);
 
         logger.info("Pin successfully canceled: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());
         return result;
-    }
-
-    /**
-     * Handler for custom exceptions that extend from our BaseCustomRequestException.
-     *
-     * @param ex
-     * @param response
-     * @throws IOException
-     */
-    @ExceptionHandler(BaseCustomRequestException.class)
-    public void handleExceptions(BaseCustomRequestException ex, HttpServletResponse response) throws IOException {
-        logger.warn(ex.getMessage());
-        response.sendError(ex.status.value(), ex.getMessage());
     }
 }
 

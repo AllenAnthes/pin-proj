@@ -7,12 +7,12 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target({ElementType.METHOD, ElementType.FIELD})
+@Target({ElementType.METHOD, ElementType.FIELD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = AccountRequiredValidator.class)
-public @interface AccountRequired {
+@Constraint(validatedBy = UnclaimedValidator.class)
+public @interface Unclaimed {
 
-    String message() default "New PINs must supply an alphanumeric account";
+    String message() default "Claim submitted on previously claimed PIN";
 
     Class<?>[] groups() default {};
 
