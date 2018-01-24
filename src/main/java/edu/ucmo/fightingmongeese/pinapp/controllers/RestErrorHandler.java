@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,18 +23,14 @@ public class RestErrorHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RestErrorHandler.class);
 
-
     private MessageSource messageSource;
-
-    private HttpServletRequest request;
 
     private StringBuilder sb;
 
     @Autowired
-    public RestErrorHandler(MessageSource messageSource, HttpServletRequest request) {
+    public RestErrorHandler(MessageSource messageSource) {
         this.messageSource = messageSource;
         sb = new StringBuilder();
-        this.request = request;
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -57,7 +51,7 @@ public class RestErrorHandler {
             sb.append(" : ").append(localizedErrorMessage);
             dto.addFieldError(fieldError.getField(), localizedErrorMessage);
         }
-        logger.warn("Received field validation errors from request: " + sb.toString());
+        logger.warn("Field validation errors from request: " + sb.toString());
 
         return dto;
     }
