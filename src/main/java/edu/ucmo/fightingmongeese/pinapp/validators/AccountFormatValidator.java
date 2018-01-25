@@ -10,7 +10,7 @@ public class AccountFormatValidator implements ConstraintValidator<AccountFormat
     }
 
     public boolean isValid(String account, ConstraintValidatorContext context) {
-        return account.matches("\\p{Alnum}+");
+        return account == null || account.matches("\\p{Alnum}+");
     }
 
 }

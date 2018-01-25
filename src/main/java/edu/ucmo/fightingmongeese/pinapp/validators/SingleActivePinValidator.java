@@ -19,6 +19,9 @@ public class SingleActivePinValidator implements ConstraintValidator<SingleActiv
     }
 
     public boolean isValid(String account, ConstraintValidatorContext context) {
+        if (account == null) {
+            return true;
+        }
         Optional<Pin> optionalPin = pinRepository.findActivePin(account);
         return !optionalPin.isPresent();
     }
