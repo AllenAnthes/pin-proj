@@ -14,6 +14,7 @@ public class ExpireTimeValidator implements ConstraintValidator<ExpireTime, Loca
 
     private DateTime dateTime;
 
+    @Autowired
     public ExpireTimeValidator(DateTime dateTime) {
         this.dateTime = dateTime;
     }
