@@ -1,55 +1,51 @@
 package edu.ucmo.fightingmongeese.pinapp;
 
 
-import edu.ucmo.fightingmongeese.pinapp.config.RequestInterceptor;
+import edu.ucmo.fightingmongeese.pinapp.components.DateTime;
 import edu.ucmo.fightingmongeese.pinapp.controllers.PinController;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import edu.ucmo.fightingmongeese.pinapp.services.PinService;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.Spy;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Optional;
 
-import static edu.ucmo.fightingmongeese.pinapp.TestUtils.asJsonString;
-import static edu.ucmo.fightingmongeese.pinapp.TestUtils.getCompletePin;
+import static edu.ucmo.fightingmongeese.pinapp.TestUtils.*;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest
+@WebMvcTest(controllers = PinController.class)
+@ComponentScan("edu.ucmo.fightingmongeese.pinapp")
 public class RequestValidationIntegrationTests {
 
 
     private MockMvc mockMVc;
 
-
-    @Configuration
-    static class ContextConfiguration {
-
-        //         this bean will be injected into the OrderServiceTest class
-        @Bean("RequestInterceptor")
-        public RequestInterceptor requestInterceptor() {
-            return new RequestInterceptor();
-        }
-    }
-
+    @Autowired
+    private WebApplicationContext wac;
 
     @MockBean
     private PinService pinService;
@@ -57,6 +53,10 @@ public class RequestValidationIntegrationTests {
     @MockBean
     private PinRepository pinRepository;
 
+    @Mock
+    private DateTime dateTime;
+
+    @Spy
     @InjectMocks
     private PinController pinController;
 
@@ -64,33 +64,147 @@ public class RequestValidationIntegrationTests {
     public void setup() {
         MockitoAnnotations.initMocks(this);
         mockMVc = MockMvcBuilders
-                .standaloneSetup(pinController)
+                .webAppContextSetup(wac)
                 .build();
         when(pinRepository.findActivePin(any(String.class))).thenReturn(Optional.empty());
-        when(pinService.add(any(Pin.class))).thenReturn(getCompletePin());
-        System.setProperty("JDBC_DATABASE_URL", "jdbc:h2:mem:pindbtest");
-        System.setProperty("JDBC_DATABASE_USERNAME", "sa");
-        System.setProperty("JDBC_DATABASE_PASSWORD", "");
+        when(dateTime.now()).thenReturn(mockedTime);
     }
 
     @Test
     public void test_add_validator_fails_on_missing_accout() throws Exception {
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.empty());
         Pin pin = new Pin();
         pin.setClaim_user("user");
 
-        when(pinService.add(any(Pin.class))).thenReturn(getCompletePin());
+        performRequest(pin, "/api/new", containsInAnyOrder("New PINs must supply a create_user"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
+
+    @Test
+    public void test_add_validator_fails_on_missing_claim_user() throws Exception {
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.empty());
+        Pin pin = new Pin();
+        pin.setAccount("account");
+
+        performRequest(pin, "/api/new", containsInAnyOrder("New PINs must supply a create_user"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
 
 
-        mockMVc.perform(post("/api/new")
+    @Test
+    public void test_add_validator_fails_on_invalid_account() throws Exception {
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.empty());
+        Pin pin = getNewPin();
+        pin.setAccount(" account-");
+
+        performRequest(pin, "/api/new", containsInAnyOrder("New PINs must supply an alphanumeric account"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
+
+    @Test
+    public void test_add_validator_fails_on_active_pin() throws Exception {
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.empty());
+        when(pinRepository.findActivePin(any(String.class))).thenReturn(Optional.of(getClaimDBResponse()));
+        Pin pin = getNewPin();
+
+        performRequest(pin, "/api/new", containsInAnyOrder("An account can only have one PIN active at a time."));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
+
+
+    @Test
+    public void test_claim_fails_with_missing_user() throws Exception {
+
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.of(getClaimDBResponse()));
+        Pin pin = getClaimPin();
+        pin.setClaim_user(null);
+
+        performRequest(pin, "/api/claim", containsInAnyOrder("Claim user is required"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
+
+
+    @Test
+    public void test_claim_fails_with_missing_pin() throws Exception {
+
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.of(getCompletePin()));
+        Pin pin = getClaimPin();
+        pin.setPin(null);
+
+        performRequest(pin, "/api/claim", containsInAnyOrder("PIN must be provided in request"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
+
+
+    @Test
+    public void test_claim_fails_with_pin_not_in_db() throws Exception {
+
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.of(getCompletePin()));
+        Pin pin = getClaimPin();
+
+        performRequest(pin, "/api/claim", containsInAnyOrder("Claim submitted on previously claimed PIN"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
+
+    @Test
+    public void test_claim_fails_with_already_claimed_pin() throws Exception {
+        when(pinRepository.findByPin(any())).thenReturn(Optional.of(getCompletePin()));
+        Pin pin = getClaimPin();
+
+        performRequest(pin, "/api/claim", containsInAnyOrder("Claim submitted on previously claimed PIN"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
+
+    @Test
+    public void test_cancel_fails_with_missing_pin() throws Exception {
+
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.of(getCompletePin()));
+        Pin pin = getClaimPin();
+        pin.setPin(null);
+
+        performRequest(pin, "/api/cancel", containsInAnyOrder("PIN must be provided in request"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
+
+
+    private void performRequest(Pin pin, String url, Matcher<Iterable<? extends String>> matcher) throws Exception {
+        mockMVc.perform(post(url)
                 .content(asJsonString(pin))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.fieldErrors[*].message", matcher))
                 .andDo(print());
-
-        verify(pinService, times(1)).add(any(Pin.class));
-        verify(pinController, times(1)).add(any(), any());
     }
 
+    @Test
+    public void test_cancel_fails_with_missing_user() throws Exception {
 
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.of(getClaimDBResponse()));
+        Pin pin = getClaimPin();
+        pin.setClaim_user(null);
+
+        performRequest(pin, "/api/cancel", containsInAnyOrder("Claim user is required"));
+
+        verifyZeroInteractions(pinService);
+        verifyZeroInteractions(pinController);
+    }
 }

@@ -9,23 +9,31 @@ import java.time.ZoneOffset;
 class TestUtils {
 
 
-    private static final LocalDateTime mockedTime = LocalDateTime.ofEpochSecond(10000, 0, ZoneOffset.UTC);
+    static final LocalDateTime mockedTime = LocalDateTime.ofEpochSecond(10000, 0, ZoneOffset.UTC);
 
     private static String IPV4_LOCALHOST = "127.0.0.1";
 
 
 
     static Pin getCompletePin() {
-        Pin pin = new Pin("SallysChecking", "127.0.0.1", "sally");
+        Pin pin = new Pin("testAccount", "127.0.0.1", "testCreateUser");
         pin.setPin("123456");
-        pin.setClaim_user("Bob");
+        pin.setExpire_timestamp(LocalDateTime.MAX);
+        pin.setClaim_user("testClaimUser");
         pin.setClaim_ip("127.0.0.1");
+        return pin;
+    }
+
+    static Pin getClaimDBResponse() {
+        Pin pin = new Pin("testAccount", "127.0.0.1", "testCreateUser");
+        pin.setPin("123456");
+        pin.setExpire_timestamp(LocalDateTime.MAX);
         return pin;
     }
 
 
     static Pin getNewPin() {
-        return new Pin("SallysSavings", IPV4_LOCALHOST, "sally");
+        return new Pin("testAccount", IPV4_LOCALHOST, "testCreateUser");
     }
 
     static Pin getCancelPin() {
@@ -39,7 +47,7 @@ class TestUtils {
         Pin pin = new Pin();
         pin.setClaim_ip(IPV4_LOCALHOST);
         pin.setPin("123456");
-        pin.setClaim_user("bob");
+        pin.setClaim_user("testClaimUser");
 //        pin.setExpire_timestamp(mockedTime.plusHours(5));
         return pin;
     }

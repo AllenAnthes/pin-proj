@@ -42,10 +42,9 @@ public class PinControllerTest {
     }
 
 
-
     @Test
     public void test_add_pin_success() {
-        HttpServletRequest  mockedRequest = Mockito.mock(HttpServletRequest.class);
+        HttpServletRequest mockedRequest = Mockito.mock(HttpServletRequest.class);
         Pin pin = getNewPin();
         when(pinService.add(any(Pin.class))).thenReturn(pin);
 
