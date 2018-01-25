@@ -26,7 +26,7 @@ public class ClaimBeforeExpirationValidator implements ConstraintValidator<Claim
 
     public boolean isValid(String pin, ConstraintValidatorContext context) {
 
-        Pin pin2 = pinRepository.findByPin(pin).orElse(null);
-        return pin2 != null && dateTime.now().isBefore(pin2.getExpire_timestamp());
+        Pin repoPin = pinRepository.findByPin(pin).orElse(null);
+        return repoPin != null && dateTime.now().isBefore(repoPin.getExpire_timestamp());
     }
 }

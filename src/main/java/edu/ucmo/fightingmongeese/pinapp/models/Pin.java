@@ -21,7 +21,7 @@ public class Pin {
 
     @Column(name = "account", nullable = false)
     @SingleActivePin(groups = Add.class)
-    @AccountRequired(groups = Add.class)
+    @AccountFormat(groups = Add.class)
     private String account;
 
     @NotNull(groups = {Claim.class, Cancel.class},
@@ -30,7 +30,6 @@ public class Pin {
     @ClaimBeforeExpiration(groups = Claim.class)
     @Unclaimed(groups = Claim.class)
     @Pattern(regexp = "\\p{N}+", message = "PIN must be numeric")
-//    @PinValidators(groups = {Add.class, Claim.class, Cancel.class})
     @Column(name = "pin", nullable = false, length = 6, unique = true)
     private String pin;
 
@@ -58,7 +57,6 @@ public class Pin {
     @NotNull(groups = {Claim.class, Cancel.class},
             message = "Claim user is required")
     @Column(name = "claim_user")
-//    @ClaimUserRequired(groups = {Claim.class, Cancel.class})
     private String claim_user;
 
     @Column(name = "claim_ip")

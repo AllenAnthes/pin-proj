@@ -9,8 +9,8 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.METHOD, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = AccountRequiredValidator.class)
-public @interface AccountRequired {
+@Constraint(validatedBy = AccountFormatValidator.class)
+public @interface AccountFormat {
 
     String message() default "New PINs must supply an alphanumeric account";
 
