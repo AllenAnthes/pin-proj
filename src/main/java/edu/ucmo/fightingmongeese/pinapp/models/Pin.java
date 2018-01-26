@@ -19,6 +19,8 @@ public class Pin {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer oid;
 
+    @NotNull(groups = Add.class,
+            message = "Account must be provided in request")
     @Column(name = "account", nullable = false)
     @SingleActivePin(groups = Add.class)
     @AccountFormat(groups = Add.class)

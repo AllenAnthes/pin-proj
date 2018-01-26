@@ -74,9 +74,9 @@ public class RequestValidationIntegrationTests {
     public void test_add_validator_fails_on_missing_accout() throws Exception {
         when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.empty());
         Pin pin = new Pin();
-        pin.setClaim_user("user");
+        pin.setCreate_user("user");
 
-        performRequest(pin, "/api/new", containsInAnyOrder("New PINs must supply a create_user"));
+        performRequest(pin, "/api/new", containsInAnyOrder("Account must be provided in request"));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
