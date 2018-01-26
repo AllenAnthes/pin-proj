@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org ">
 
 <head>
     <title>Temp PIN Table</title>
@@ -12,8 +13,9 @@
 
 <div th:replace="fragments/header :: header">...</div>
 
-<div class="container" style="margin-top:100px">
-    <h2>Group Credentials</h2>
+<div class="container-fluid" style="margin-top:100px; width: 80%">
+    <!--<div style="margin-top:100px; margin-left:25px; margin-right:25px">-->
+    <h2>One-time use PINs</h2>
 
     <table class="table table-bordered table-striped table-hover table-responsive">
         <thead class="thead-inverse">
@@ -29,6 +31,7 @@
             <th class="">Claim IP</th>
             <th class="">Claim Timestamp</th>
             <th class="">Edit</th>
+            <th class="">Reset Claim</th>
             <th class="">Reset Expiration</th>
             <th class="">Delete</th>
         </tr>
@@ -51,7 +54,12 @@
                    th:href="@{'/pins/claim/' + ${pin.account} + '/' + ${pin.pin} + '/' + ${#authentication.getPrincipal().getUsername()}}">Claim</a>
             </td>
             <td style="text-align:center;">
-                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/resetExpiration/' + ${pin.oid}}">Reset Expiration</a>
+                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/resetClaim/' + ${pin.oid}}">Reset
+                    Claim</a>
+            </td>
+            <td style="text-align:center;">
+                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/resetExpiration/' + ${pin.oid}}">Reset
+                    Expiration</a>
             </td>
             <td style="text-align:center;">
                 <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/delete/' + ${pin.oid}}">Delete</a>

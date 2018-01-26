@@ -127,12 +127,31 @@ public class WebGUIController {
      */
     @RequestMapping(value = "pins/resetExpiration/{oid}")
     public String resetExpiration(@PathVariable Integer oid, HttpServletRequest request) {
-        logger.info("Reset request recevied for oid: {}", oid);
+        logger.info("Reset expiration request recevied for oid: {}", oid);
 
         Map<String, String> payload = new HashMap<>();
         payload.put("oid", String.valueOf(oid));
 
-        String baseUrl = String.format("%s://%s:%d/api/resetExpiration", request.getScheme(), request.getServerName(), request.getServerPort());
+        String baseUrl = String.format("%s://%s:%d/test/resetExpiration", request.getScheme(), request.getServerName(), request.getServerPort());
+        this.getRESTResponse(baseUrl, payload);
+        return "redirect:/pins/list";
+    }
+
+    /**
+     * Development testing mapping for receiving request from web GUI to
+     * reset claim time.
+     * @param oid
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "pins/resetClaim/{oid}")
+    public String resetClaim(@PathVariable Integer oid, HttpServletRequest request) {
+        logger.info("Reset claim request recevied for oid: {}", oid);
+
+        Map<String, String> payload = new HashMap<>();
+        payload.put("oid", String.valueOf(oid));
+
+        String baseUrl = String.format("%s://%s:%d/test/unclaim", request.getScheme(), request.getServerName(), request.getServerPort());
         this.getRESTResponse(baseUrl, payload);
         return "redirect:/pins/list";
     }
