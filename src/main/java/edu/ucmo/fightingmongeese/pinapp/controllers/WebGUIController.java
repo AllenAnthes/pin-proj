@@ -119,6 +119,25 @@ public class WebGUIController {
     }
 
     /**
+     * Development testing mapping for receiving request from web GUI to
+     * increase expiration time.
+     * @param oid
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "pins/resetExpiration/{oid}")
+    public String resetExpiration(@PathVariable Integer oid, HttpServletRequest request) {
+        logger.info("Reset request recevied for oid: {}", oid);
+
+        Map<String, String> payload = new HashMap<>();
+        payload.put("oid", String.valueOf(oid));
+
+        String baseUrl = String.format("%s://%s:%d/api/resetExpiration", request.getScheme(), request.getServerName(), request.getServerPort());
+        this.getRESTResponse(baseUrl, payload);
+        return "redirect:/pins/list";
+    }
+
+    /**
      * Utility method for passing requests to the REST endpoints
      *
      * @param url    URL of the PinRestController endpoint

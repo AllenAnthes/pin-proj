@@ -29,6 +29,7 @@
             <th class="">Claim IP</th>
             <th class="">Claim Timestamp</th>
             <th class="">Edit</th>
+            <th class="">Reset Expiration</th>
             <th class="">Delete</th>
         </tr>
         </thead>
@@ -48,6 +49,9 @@
             <td style="text-align:center;">
                 <a class="btn btn-success" href="#" type="button"
                    th:href="@{'/pins/claim/' + ${pin.account} + '/' + ${pin.pin} + '/' + ${#authentication.getPrincipal().getUsername()}}">Claim</a>
+            </td>
+            <td style="text-align:center;">
+                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/resetExpiration/' + ${pin.oid}}">Reset Expiration</a>
             </td>
             <td style="text-align:center;">
                 <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/delete/' + ${pin.oid}}">Delete</a>

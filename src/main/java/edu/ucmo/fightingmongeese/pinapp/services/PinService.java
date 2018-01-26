@@ -79,8 +79,9 @@ public class PinService {
     public Pin cancel(Pin cancelPin) {
 
         Pin pin = pinRepository.findByPin(cancelPin.getPin()).orElse(new Pin());
+        pin.setClaim_ip(cancelPin.getClaim_ip());
         pin.setClaim_user(cancelPin.getClaim_user());
-        cancelPin.setClaim_timestamp(dateTime.now());
-        return pinRepository.save(cancelPin);
+        pin.setClaim_timestamp(dateTime.now());
+        return pinRepository.save(pin);
     }
 }

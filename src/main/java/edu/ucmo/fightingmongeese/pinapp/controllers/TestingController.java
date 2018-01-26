@@ -1,6 +1,7 @@
 package edu.ucmo.fightingmongeese.pinapp.controllers;
 
 
+import edu.ucmo.fightingmongeese.pinapp.components.DateTime;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class TestingController {
     @Autowired
     PinRepository pinRepository;
 
+    @Autowired
+    DateTime dateTime;
+
 
     @PostMapping("/all")
     public List<Pin> all() {
@@ -26,7 +30,7 @@ public class TestingController {
 
 
     /**
-     * Temporary method for resetting a PIN back to
+     * Development testing method for resetting a PIN back to
      * unclaimed status for testing purposes
      *
      * @param pin
@@ -40,4 +44,17 @@ public class TestingController {
         return pinRepository.save(pin);
     }
 
+    /**
+     * Development testing method for adding
+     * 30 minutes to the expiration time of
+     * given PIN
+     * @param pin
+     * @return
+     */
+    @PostMapping("resetExpiration")
+    public Pin resetExpiration(@RequestBody Pin pin) {
+        pin = pinRepository.findOne(pin.getOid());
+        pin.setExpire_timestamp(dateTime.now().plusMinutes(30));
+        return pinRepository.save(pin);
+    }
 }
