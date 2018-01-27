@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:th="http://www.thymeleaf.org" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="http://www.thymeleaf.org ">
+      xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <title>Temp PIN Table</title>
@@ -13,8 +12,9 @@
 
 <div th:replace="fragments/header :: header">...</div>
 
+
 <div class="container-fluid" style="margin-top:100px; width: 80%">
-    <!--<div style="margin-top:100px; margin-left:25px; margin-right:25px">-->
+
     <h2>One-time use PINs</h2>
 
     <table class="table table-bordered table-striped table-hover table-responsive">
@@ -70,6 +70,9 @@
     <p><a class="btn btn-secondary" href="#" type="button" data-toggle="modal" data-target="#newModal">New PIN
         &raquo;</a></p>
 </div>
+<th:block th:if="${result}">
+    <div th:replace="fragments/responseContent ::response-content"></div>
+</th:block>
 
 <div th:replace="fragments/footer :: footer"></div>
 

@@ -1,6 +1,8 @@
 package edu.ucmo.fightingmongeese.pinapp.controllers;
 
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.models.PinDTO;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
@@ -16,9 +18,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,6 +45,34 @@ public class WebGUIController {
     private static final Logger logger = LoggerFactory.getLogger(PinController.class);
 
     /**
+     * Method for displaying PINs currently in the database as a table
+     */
+    @RequestMapping(value = "pins/list", method = RequestMethod.GET)
+    public String showCredentials(@ModelAttribute("resultAttribute") String result,
+                                  @ModelAttribute("payloadAttribute") HashMap<String, String> payload, Model model) throws IOException {
+
+        ObjectMapper mapper = new ObjectMapper();
+        if (!result.equals("")) {
+            Object json = mapper.readValue(result, Object.class);
+            model.addAttribute("result", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json));
+        }
+        if (!payload.isEmpty()) {
+            model.addAttribute("request", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(payload));
+
+        }
+        List<Pin> pins = pinRepository.findAll();
+        model.addAttribute("pins", pins);
+        PinDTO pin = new PinDTO();
+        pin.setExpire_date(LocalDate.now().plusDays(2));
+        pin.setExpire_time(LocalTime.now());
+
+
+        model.addAttribute("pin", pin);
+
+        return "pin-table";
+    }
+
+    /**
      * Method for routing new submissions from the Thymeleaf UI to the REST endpoint
      *
      * @param pin     DTO that holds the info to be transferred to the actual endpoint.
@@ -46,7 +80,7 @@ public class WebGUIController {
      * @param request
      */
     @RequestMapping(value = "pins/new", method = RequestMethod.POST)
-    public String add(@ModelAttribute PinDTO pin, HttpServletRequest request) {
+    public String add(@ModelAttribute PinDTO pin, HttpServletRequest request, RedirectAttributes attributes) {
 
         String baseUrl = String.format("%s://%s:%d/api/", request.getScheme(),
                 request.getServerName(), request.getServerPort());
@@ -62,25 +96,11 @@ public class WebGUIController {
             payload.put("expire_timestamp", String.valueOf(pin.getExpire_date()));
         }
 
-        String res = this.getRESTResponse(url, payload);
+        String result = this.getRESTResponse(url, payload);
+        attributes.addFlashAttribute("resultAttribute", result);
+        attributes.addFlashAttribute("payloadAttribute", payload);
+
         return "redirect:/pins/list";
-    }
-
-    /**
-     * Method for displaying PINs currently in the database as a table
-     */
-    @RequestMapping(value = "pins/list", method = RequestMethod.GET)
-    public String showCredentials(Model model) {
-        List<Pin> pins = pinRepository.findAll();
-        model.addAttribute("pins", pins);
-        PinDTO pin = new PinDTO();
-        pin.setExpire_date(LocalDate.now().plusDays(2));
-        pin.setExpire_time(LocalTime.now());
-
-
-        model.addAttribute("pin", pin);
-
-        return "pin-table";
     }
 
     /**
@@ -92,13 +112,17 @@ public class WebGUIController {
      * @param request
      */
     @RequestMapping(value = "pins/claim/{account}/{pin}/{user}")
-    public String claim(@PathVariable String account, @PathVariable String user, @PathVariable String pin, HttpServletRequest request) {
+    public String claim(@PathVariable String account, @PathVariable String user, @PathVariable String pin,
+                        HttpServletRequest request, RedirectAttributes attributes) {
 
         Map<String, String> payload = new HashMap<>();
         payload.put("claim_user", user);
         payload.put("pin", pin);
         String baseUrl = String.format("%s://%s:%d/api/claim", request.getScheme(), request.getServerName(), request.getServerPort());
-        this.getRESTResponse(baseUrl, payload);
+        String result = this.getRESTResponse(baseUrl, payload);
+        attributes.addFlashAttribute("resultAttribute", result);
+        attributes.addFlashAttribute("payloadAttribute", payload);
+
         return "redirect:/pins/list";
     }
 
@@ -111,7 +135,6 @@ public class WebGUIController {
     public String delete(@PathVariable Integer oid, HttpServletRequest request) {
         Pin pin = pinRepository.getOne(oid);
         pinRepository.delete(oid);
-
         logger.info(String.format("PIN deleted: Account: %s | PIN: %s | User: %s | IP: %s",
                 pin.getAccount(), pin.getPin(), request.getUserPrincipal().getName(), request.getRemoteAddr()));
 
@@ -121,38 +144,46 @@ public class WebGUIController {
     /**
      * Development testing mapping for receiving request from web GUI to
      * increase expiration time.
+     *
      * @param oid
      * @param request
      * @return
      */
     @RequestMapping(value = "pins/resetExpiration/{oid}")
-    public String resetExpiration(@PathVariable Integer oid, HttpServletRequest request) {
+    public String resetExpiration(@PathVariable Integer oid, HttpServletRequest request, RedirectAttributes attributes) {
         logger.info("Reset expiration request recevied for oid: {}", oid);
 
         Map<String, String> payload = new HashMap<>();
         payload.put("oid", String.valueOf(oid));
 
         String baseUrl = String.format("%s://%s:%d/test/resetExpiration", request.getScheme(), request.getServerName(), request.getServerPort());
-        this.getRESTResponse(baseUrl, payload);
+        String result = this.getRESTResponse(baseUrl, payload);
+        attributes.addFlashAttribute("resultAttribute", result);
+        attributes.addFlashAttribute("payloadAttribute", payload);
+
         return "redirect:/pins/list";
     }
 
     /**
      * Development testing mapping for receiving request from web GUI to
      * reset claim time.
+     *
      * @param oid
      * @param request
      * @return
      */
     @RequestMapping(value = "pins/resetClaim/{oid}")
-    public String resetClaim(@PathVariable Integer oid, HttpServletRequest request) {
+    public String resetClaim(@PathVariable Integer oid, HttpServletRequest request, RedirectAttributes attributes) {
         logger.info("Reset claim request recevied for oid: {}", oid);
 
         Map<String, String> payload = new HashMap<>();
         payload.put("oid", String.valueOf(oid));
 
         String baseUrl = String.format("%s://%s:%d/test/unclaim", request.getScheme(), request.getServerName(), request.getServerPort());
-        this.getRESTResponse(baseUrl, payload);
+        String result = this.getRESTResponse(baseUrl, payload);
+        attributes.addFlashAttribute("resultAttribute", result);
+        attributes.addFlashAttribute("payloadAttribute", payload);
+
         return "redirect:/pins/list";
     }
 
@@ -172,7 +203,7 @@ public class WebGUIController {
             ResponseEntity<String> responseEntity = template.exchange(url, HttpMethod.POST, requestEntity, String.class);
             response = responseEntity.getBody();
         } catch (Exception e) {
-            response = e.getMessage();
+            response = ((HttpClientErrorException) e).getResponseBodyAsString();
             logger.warn(response);
         }
 //        logger.info(response);
