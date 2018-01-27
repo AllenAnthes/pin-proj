@@ -50,32 +50,33 @@
             <td class=""
                 th:text="(${pin.claim_timestamp} != null) ? ${#temporals.format(pin.claim_timestamp,'yyy/MM/dd HH:mm:ss' )} : ''"></td>
             <td style="text-align:center;">
-                <a class="btn btn-success" href="#" type="button"
+                <a class="btn btn-primary btn-sm" href="#" type="button"
                    th:href="@{'/pins/claim/' + ${pin.account} + '/' + ${pin.pin} + '/' + ${#authentication.getPrincipal().getUsername()}}">Claim</a>
             </td>
             <td style="text-align:center;">
-                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/resetClaim/' + ${pin.oid}}">Reset
+                <a class="btn btn-primary btn-sm" href="#" type="button" th:href="@{'/pins/resetClaim/' + ${pin.oid}}">Reset
                     Claim</a>
             </td>
             <td style="text-align:center;">
-                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/resetExpiration/' + ${pin.oid}}">Reset
+                <a class="btn btn-primary btn-sm" href="#" type="button"
+                   th:href="@{'/pins/resetExpiration/' + ${pin.oid}}">Reset
                     Expiration</a>
             </td>
             <td style="text-align:center;">
-                <a class="btn btn-success" href="#" type="button" th:href="@{'/pins/delete/' + ${pin.oid}}">Delete</a>
+                <a class="btn btn-primary btn-sm" href="#" type="button" th:href="@{'/pins/delete/' + ${pin.oid}}">Delete</a>
             </td>
         </tr>
         </tbody>
     </table>
-    <p><a class="btn btn-secondary" href="#" type="button" data-toggle="modal" data-target="#newModal">New PIN
-        &raquo;</a></p>
+    <div class="row">
+        <p><a class="btn btn-secondary" href="#" type="button" data-toggle="modal" data-target="#newModal">New PIN
+            &raquo;</a></p>
+    </div>
 </div>
 <th:block th:if="${result}">
     <div th:replace="fragments/responseContent ::response-content"></div>
 </th:block>
 
 <div th:replace="fragments/footer :: footer"></div>
-
 </body>
-
 </html>

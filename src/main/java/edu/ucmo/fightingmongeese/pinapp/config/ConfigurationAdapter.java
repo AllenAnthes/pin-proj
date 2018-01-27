@@ -21,8 +21,6 @@ public class ConfigurationAdapter extends WebMvcConfigurerAdapter {
                 .addPathPatterns("/api/**");
     }
 
-
-
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/css/**").addResourceLocations("/css/").setCachePeriod(31556926);

@@ -34,7 +34,8 @@ import java.util.Map;
 
 /**
  * Temporary Controller for the Thymeleaf based front-end
- * Will most likely be removed before prod.  No judging my code here
+ * Used for testing and demo purposes
+ * Will be removed before prod.  No judging my code here
  */
 @Controller
 public class WebGUIController {
@@ -49,9 +50,13 @@ public class WebGUIController {
      */
     @RequestMapping(value = "pins/list", method = RequestMethod.GET)
     public String showCredentials(@ModelAttribute("resultAttribute") String result,
-                                  @ModelAttribute("payloadAttribute") HashMap<String, String> payload, Model model) throws IOException {
+                                  @ModelAttribute("payloadAttribute") HashMap<String, String> payload,
+                                  @ModelAttribute("requestUrl") String requestUrl, Model model) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
+        if (!requestUrl.equals("")) {
+            model.addAttribute("requestUrl", requestUrl);
+        }
         if (!result.equals("")) {
             Object json = mapper.readValue(result, Object.class);
             model.addAttribute("result", mapper.writerWithDefaultPrettyPrinter().writeValueAsString(json));
@@ -98,6 +103,7 @@ public class WebGUIController {
 
         String result = this.getRESTResponse(url, payload);
         attributes.addFlashAttribute("resultAttribute", result);
+        attributes.addFlashAttribute("requestUrl", baseUrl);
         attributes.addFlashAttribute("payloadAttribute", payload);
 
         return "redirect:/pins/list";
@@ -121,6 +127,7 @@ public class WebGUIController {
         String baseUrl = String.format("%s://%s:%d/api/claim", request.getScheme(), request.getServerName(), request.getServerPort());
         String result = this.getRESTResponse(baseUrl, payload);
         attributes.addFlashAttribute("resultAttribute", result);
+        attributes.addFlashAttribute("requestUrl", baseUrl);
         attributes.addFlashAttribute("payloadAttribute", payload);
 
         return "redirect:/pins/list";
@@ -159,6 +166,7 @@ public class WebGUIController {
         String baseUrl = String.format("%s://%s:%d/test/resetExpiration", request.getScheme(), request.getServerName(), request.getServerPort());
         String result = this.getRESTResponse(baseUrl, payload);
         attributes.addFlashAttribute("resultAttribute", result);
+        attributes.addFlashAttribute("requestUrl", baseUrl);
         attributes.addFlashAttribute("payloadAttribute", payload);
 
         return "redirect:/pins/list";
@@ -182,6 +190,7 @@ public class WebGUIController {
         String baseUrl = String.format("%s://%s:%d/test/unclaim", request.getScheme(), request.getServerName(), request.getServerPort());
         String result = this.getRESTResponse(baseUrl, payload);
         attributes.addFlashAttribute("resultAttribute", result);
+        attributes.addFlashAttribute("requestUrl", baseUrl);
         attributes.addFlashAttribute("payloadAttribute", payload);
 
         return "redirect:/pins/list";
@@ -199,7 +208,6 @@ public class WebGUIController {
         HttpEntity<Map<String, String>> requestEntity = new HttpEntity<>(params);
         String response;
         try {
-
             ResponseEntity<String> responseEntity = template.exchange(url, HttpMethod.POST, requestEntity, String.class);
             response = responseEntity.getBody();
         } catch (Exception e) {

@@ -1,28 +1,20 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org"
-      layout:decorate="~{Layout}">
+<html xmlns:th="http://www.thymeleaf.org">
 <body>
 <th:block th:fragment="response-content">
     <div class="card bg-light mb-3 border-light ">
         <p class="text-center">
-            <button class="btn btn-primary" data-toggle="collapse" data-target="#requestCollapse" role="button"
-                    aria-expanded="false" aria-controls="resultCollapse">Toggle Request
-            </button>
             <button class="btn btn-primary" type="button" data-toggle="collapse" data-target=".multi-collapse"
-                    aria-expanded="false" aria-controls="requestCollapse resultCollapse">Toggle Both
+                    aria-expanded="false" aria-controls="requestCollapse resultCollapse">Toggle Hide/Unhide
             </button>
-            <button class="btn btn-primary text-center" type="button" data-toggle="collapse"
-                    data-target="#resultCollapse" aria-expanded="false" aria-controls="requestCollapse">
-                Toggle Response
-            </button>
-
         </p>
-        <div class="row row-eq-height">
+        <div class="row">
             <div class="col">
                 <div class="collapse multi-collapse show" id="requestCollapse">
                     <div class="card card-body">
-                        <h5 class="card-title">Request Body</h5>
+                        <h5 class="card-title">Request</h5>
+                        <pre th:if="${requestUrl != ''}" th:text="'URL: ' +  ${requestUrl}"></pre>
+                        <h6 class="card-title">Body</h6>
                         <pre th:text="${request}"></pre>
                     </div>
                 </div>
@@ -30,7 +22,8 @@
             <div class="col">
                 <div class="collapse multi-collapse show" id="resultCollapse">
                     <div class="card card-body">
-                        <h5 class="card-title">Response Body</h5>
+                        <h5 class="card-title">Response</h5>
+                        <h6 class="card-title">Body</h6>
                         <pre th:text="${result}"></pre>
                     </div>
                 </div>

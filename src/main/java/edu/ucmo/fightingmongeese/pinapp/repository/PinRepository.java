@@ -15,7 +15,6 @@ public interface PinRepository extends JpaRepository<Pin, Integer> {
 
 
     Optional<Pin> findByPin(String pin);
-
     @Query(value = "select p from Pin p where p.account = ?1 and p.claim_ip is null")
     Optional<Pin> findActivePin(String account);
 
