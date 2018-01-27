@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = CheckPinExistsValidator.class)
 public @interface CheckPinExists {
 
-    String message() default "Given PIN does not exist";
+    String message() default "{edu.ucmo.fightingmongeese.defaultCheckPinExistsMessage}";
 
     Class<?>[] groups() default {};
 

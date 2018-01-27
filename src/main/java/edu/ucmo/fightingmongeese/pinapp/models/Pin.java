@@ -17,14 +17,14 @@ public class Pin {
     private Integer oid;
 
     @NotNull(groups = Add.class,
-            message = "Account must be provided in request")
+            message = "{edu.ucmo.fightingmongeese.defaultAccountRequiredMessage}")
     @Column(name = "account", nullable = false)
     @SingleActivePin(groups = Add.class)
     @AccountFormat(groups = Add.class)
     private String account;
 
     @NotNull(groups = {Claim.class, Cancel.class},
-            message = "PIN must be provided in request")
+            message = "{edu.ucmo.fightingmongeese.defaultPINRequiredMessage}")
     @CheckPinExists(groups = {Claim.class, Cancel.class})
     @ClaimBeforeExpiration(groups = Claim.class)
     @Unclaimed(groups = Claim.class)
@@ -54,7 +54,7 @@ public class Pin {
     private LocalDateTime claim_timestamp;
 
     @NotNull(groups = {Claim.class, Cancel.class},
-            message = "Claim user is required")
+            message = "{edu.ucmo.fightingmongeese.defaultClaimUserRequiredMessage}")
     @Column(name = "claim_user")
     private String claim_user;
 

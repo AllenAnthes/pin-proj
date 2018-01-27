@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = ExpireTimeValidator.class)
 public @interface ExpireTime {
-    String message() default "Expire time must be in the future or left blank.";
+    String message() default "{edu.ucmo.fightingmongeese.defaultExpireTimeMessage}";
 
     Class<?>[] groups() default {};
 

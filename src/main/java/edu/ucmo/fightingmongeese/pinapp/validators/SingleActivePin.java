@@ -13,7 +13,7 @@ import java.util.ArrayList;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = SingleActivePinValidator.class)
 public @interface SingleActivePin {
-    String message() default "An account can only have one PIN active at a time.";
+    String message() default "{edu.ucmo.fightingmongeese.defaultSingleActivePinMessage}";
 
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

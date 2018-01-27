@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = ClaimBeforeExpirationValidator.class)
 public @interface ClaimBeforeExpiration {
 
-    String message() default "Claim submitted after expire time";
+    String message() default "{edu.ucmo.fightingmongeese.defaultClaimBeforeExpirationMessage}";
 
     Class<?>[] groups() default {};
 

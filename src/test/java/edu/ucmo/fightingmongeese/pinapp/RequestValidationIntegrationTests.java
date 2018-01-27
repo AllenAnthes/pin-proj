@@ -15,9 +15,11 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.Spy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,10 +38,36 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(controllers = PinController.class)
 @ComponentScan("edu.ucmo.fightingmongeese.pinapp")
+@PropertySource(value = "classpath:ValidationMessages.properties")
 public class RequestValidationIntegrationTests {
+
+    /**
+     * Field Validation Error Messages
+     */
+    @Value("${edu.ucmo.fightingmongeese.defaultPINRequiredMessage}")
+    String pinRequired;
+    @Value("${edu.ucmo.fightingmongeese.defaultUnclaimedMessage}")
+    String unclaimed;
+    @Value("${edu.ucmo.fightingmongeese.defaultCheckPinExistsMessage}")
+    String checkPinExists;
+    @Value("${edu.ucmo.fightingmongeese.defaultAccountFormatMessage}")
+    String accountFormat;
+    @Value("${edu.ucmo.fightingmongeese.defaultSingleActivePinMessage}")
+    String singleActivePin;
+    @Value("${edu.ucmo.fightingmongeese.defaultAccountRequiredMessage}")
+    String accountRequired;
+    @Value("${edu.ucmo.fightingmongeese.defaultCreateUserRequiredMessage}")
+    String createUserRequired;
+    @Value("${edu.ucmo.fightingmongeese.defaultClaimUserRequiredMessage}")
+    String claimUserRequired;
+    @Value("${edu.ucmo.fightingmongeese.defaultClaimBeforeExpirationMessage}")
+    String claimBeforeExpiration;
+    @Value("${edu.ucmo.fightingmongeese.defaultExpireTimeMessage}")
+    String expireTime;
 
 
     private MockMvc mockMVc;
@@ -60,6 +88,7 @@ public class RequestValidationIntegrationTests {
     @InjectMocks
     private PinController pinController;
 
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
@@ -76,7 +105,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = new Pin();
         pin.setCreate_user("user");
 
-        performRequest(pin, "/api/new", containsInAnyOrder("Account must be provided in request"));
+        performRequest(pin, "/api/new", containsInAnyOrder(accountRequired));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -88,7 +117,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = new Pin();
         pin.setAccount("account");
 
-        performRequest(pin, "/api/new", containsInAnyOrder("New PINs must supply a create_user"));
+        performRequest(pin, "/api/new", containsInAnyOrder(createUserRequired));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -101,7 +130,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = getNewPin();
         pin.setAccount(" account-");
 
-        performRequest(pin, "/api/new", containsInAnyOrder("New PINs must supply an alphanumeric account"));
+        performRequest(pin, "/api/new", containsInAnyOrder(accountFormat));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -113,7 +142,7 @@ public class RequestValidationIntegrationTests {
         when(pinRepository.findActivePin(any(String.class))).thenReturn(Optional.of(getClaimDBResponse()));
         Pin pin = getNewPin();
 
-        performRequest(pin, "/api/new", containsInAnyOrder("An account can only have one PIN active at a time."));
+        performRequest(pin, "/api/new", containsInAnyOrder(singleActivePin));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -127,7 +156,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = getClaimPin();
         pin.setClaim_user(null);
 
-        performRequest(pin, "/api/claim", containsInAnyOrder("Claim user is required"));
+        performRequest(pin, "/api/claim", containsInAnyOrder(claimUserRequired));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -141,7 +170,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = getClaimPin();
         pin.setPin(null);
 
-        performRequest(pin, "/api/claim", containsInAnyOrder("PIN must be provided in request"));
+        performRequest(pin, "/api/claim", containsInAnyOrder(pinRequired));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -151,10 +180,10 @@ public class RequestValidationIntegrationTests {
     @Test
     public void test_claim_fails_with_pin_not_in_db() throws Exception {
 
-        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.of(getCompletePin()));
+        when(pinRepository.findByPin(any(String.class))).thenReturn(Optional.empty());
         Pin pin = getClaimPin();
 
-        performRequest(pin, "/api/claim", containsInAnyOrder("Claim submitted on previously claimed PIN"));
+        performRequest(pin, "/api/claim", containsInAnyOrder(checkPinExists));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -165,7 +194,7 @@ public class RequestValidationIntegrationTests {
         when(pinRepository.findByPin(any())).thenReturn(Optional.of(getCompletePin()));
         Pin pin = getClaimPin();
 
-        performRequest(pin, "/api/claim", containsInAnyOrder("Claim submitted on previously claimed PIN"));
+        performRequest(pin, "/api/claim", containsInAnyOrder(unclaimed));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -178,7 +207,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = getClaimPin();
         pin.setPin(null);
 
-        performRequest(pin, "/api/cancel", containsInAnyOrder("PIN must be provided in request"));
+        performRequest(pin, "/api/cancel", containsInAnyOrder(pinRequired));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -202,7 +231,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = getClaimPin();
         pin.setClaim_user(null);
 
-        performRequest(pin, "/api/cancel", containsInAnyOrder("Claim user is required"));
+        performRequest(pin, "/api/cancel", containsInAnyOrder(claimUserRequired));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);

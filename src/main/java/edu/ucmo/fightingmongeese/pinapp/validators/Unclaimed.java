@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = UnclaimedValidator.class)
 public @interface Unclaimed {
 
-    String message() default "Claim submitted on previously claimed PIN";
+    String message() default "{edu.ucmo.fightingmongeese.defaultUnclaimedMessage}";
 
     Class<?>[] groups() default {};
 

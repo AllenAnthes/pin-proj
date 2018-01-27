@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = AccountFormatValidator.class)
 public @interface AccountFormat {
 
-    String message() default "New PINs must supply an alphanumeric account";
+    String message() default "{edu.ucmo.fightingmongeese.defaultAccountFormatMessage}";
 
     Class<?>[] groups() default {};
 
