@@ -51,7 +51,7 @@ public class RestErrorHandler {
             sb.append(" : ").append(localizedErrorMessage);
             dto.addFieldError(fieldError.getField(), localizedErrorMessage);
         }
-        logger.warn("Field validation errors from request: " + sb.toString());
+        logger.warn("Field validation errors from request" + sb.toString());
         sb = new StringBuilder();
 
         return dto;
