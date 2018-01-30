@@ -60,7 +60,8 @@ public class WebGUIController {
     @RequestMapping(value = "pins/list", method = RequestMethod.GET)
     public String showCredentials(@ModelAttribute("resultAttribute") String result,
                                   @ModelAttribute("payloadAttribute") HashMap<String, String> payload,
-                                  @ModelAttribute("requestUrl") String requestUrl, Model model) throws IOException {
+                                  @ModelAttribute("requestUrl") String requestUrl, Model model,
+                                  HttpServletRequest request) throws IOException {
 
         ObjectMapper mapper = new ObjectMapper();
         if (!requestUrl.equals("")) {
@@ -77,6 +78,7 @@ public class WebGUIController {
         List<Pin> pins = pinRepository.findAll();
         model.addAttribute("pins", pins);
         PinDTO pin = new PinDTO();
+        pin.setCreate_user(request.getUserPrincipal().getName());
         pin.setExpire_date(LocalDate.now().plusDays(2));
         pin.setExpire_time(LocalTime.now());
 
@@ -102,7 +104,9 @@ public class WebGUIController {
 
         Map<String, String> payload = new HashMap<>();
         payload.put("account", pin.getAccount());
-        payload.put("create_user", request.getUserPrincipal().getName());
+
+        payload.put("create_user",
+                (pin.getCreate_user() != null) ? pin.getCreate_user() : request.getUserPrincipal().getName());
 
         if (pin.getExpire_date() != null && pin.getExpire_time() != null) {
             payload.put("expire_timestamp", String.valueOf(LocalDateTime.of(pin.getExpire_date(), pin.getExpire_time())));

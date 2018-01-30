@@ -27,6 +27,17 @@ public class PinDTO {
     @Column
     private String claim_user;
 
+    public String getCreate_user() {
+        return create_user;
+    }
+
+    public void setCreate_user(String create_user) {
+        this.create_user = create_user;
+    }
+
+    @Column
+    private String create_user;
+
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate expire_date;
