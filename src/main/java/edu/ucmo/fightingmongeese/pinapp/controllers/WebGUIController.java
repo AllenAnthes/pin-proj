@@ -46,7 +46,16 @@ public class WebGUIController {
     private static final Logger logger = LoggerFactory.getLogger(PinController.class);
 
     /**
-     * Method for displaying PINs currently in the database as a table
+     * Method for displaying PINs currently in the database as a table.
+     * <p>
+     * All model attributes are passed to this method when a user performs an action on the frontend
+     * and are embedded in the model before the user is redirected back here
+     *
+     * @param result     result returned from the API call
+     * @param payload    payload sent to the REST API
+     * @param requestUrl REST API endpoint request was forwarded to
+     * @param model      Container for attributes that is sent to the frontend
+     * @return pin-table    model and the html page to be displayed to the user
      */
     @RequestMapping(value = "pins/list", method = RequestMethod.GET)
     public String showCredentials(@ModelAttribute("resultAttribute") String result,
@@ -212,7 +221,7 @@ public class WebGUIController {
             response = responseEntity.getBody();
         } catch (Exception e) {
             response = ((HttpClientErrorException) e).getResponseBodyAsString();
-            logger.warn(response);
+//            logger.warn(response);
         }
 //        logger.info(response);
         return response;

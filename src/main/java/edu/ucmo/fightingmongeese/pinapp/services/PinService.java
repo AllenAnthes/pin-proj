@@ -9,6 +9,18 @@ import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 
+/**
+ * Primary class containing the business logic behind the REST API
+ * <p>
+ * As validation is completed before the request arrives at this point
+ * the method simply updates the PIN in the repository with the necessary
+ * information.
+ * <p>
+ * Currently there is no authentication implemented and the service assumes any request
+ * received is valid.
+ * <p>
+ * Old record scavenging is not currently implemented but could easily be added.
+ */
 @Service
 public class PinService {
 
@@ -26,7 +38,7 @@ public class PinService {
      * Method containing the business logic for adding a new PIN to the database.
      * A 6 digit PIN is created using Java's SecureRandom class
      *
-     * @param pin
+     * @param pin PIN received from the client to be added to the database
      */
     public Pin add(Pin pin) {
 
@@ -55,11 +67,9 @@ public class PinService {
     }
 
     /**
-     * Method handles passing claim to validator and persisting the claim in the database
-     * <p>
-     * Besides basic param validation there is currently no authentication implemented.
+     * Method for handling claims sent to the REST API.
      *
-     * @param claimPin
+     * @param claimPin PIN sent from the client to be claimed.
      */
     public Pin claim(Pin claimPin) {
         Pin pin = pinRepository.findByPin(claimPin.getPin()).orElse(new Pin());
@@ -70,11 +80,9 @@ public class PinService {
     }
 
     /**
-     * Business logic for canceling an active PIN.
-     * The service assumes a valid user is performing the request
-     * and only validates the PIN is currently active in the database
+     * Method used to interact with the database to cancel an active PIN
      *
-     * @param cancelPin
+     * @param cancelPin PIN sent from the client to be canceled.
      */
     public Pin cancel(Pin cancelPin) {
 

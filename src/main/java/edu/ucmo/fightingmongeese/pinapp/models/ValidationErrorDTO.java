@@ -3,6 +3,10 @@ package edu.ucmo.fightingmongeese.pinapp.models;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Data Transfer Object used by the RestErrorHandler to collect all FieldErrors to be sent to the
+ * requesting client
+ */
 public class ValidationErrorDTO {
 
     private List<FieldErrorDTO> fieldErrors = new ArrayList<>();

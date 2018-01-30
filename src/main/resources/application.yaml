@@ -1,3 +1,5 @@
+
+#  Defines the location to store logs as well as their format
 logging:
   path: logs
   pattern.console: "%d{dd-MM-yyyy HH:mm:ss.SSS} %highlight(%-5level) %logger{10}.%M - %msg%n"
@@ -9,21 +11,28 @@ logging:
 server.port: 8080
 spring.mvc.view.suffix: .html
 
+#  Current implementation supplies Spring with the database parameters as environment variables
 spring.datasource:
   url: ${JDBC_DATABASE_URL}
   username: ${JDBC_DATABASE_USERNAME}
   password: ${JDBC_DATABASE_PASSWORD}
 
+#  Development setting.  Recreates the table each time the server spins up
 spring.datasource.initialize: true
 spring.jpa:
   hibernate.ddl-auto: create-drop
   show-sql: false
 
-spring.data.rest.base-path: /api
 
+#spring.data.rest.base-path: /api
+
+#  Setting appears to be  required so that hibernate validator
+#  bean can be properly injected at runtime.
 spring.jpa.properties.javax.persistence.validation.mode: NONE
 
-# optional in-memory h2 settings for testing if mysql db is unavailable
+#  optional in-memory h2 settings for testing if mysql db is unavailable
+#  H2 console is left on during development because I keep forgetting to
+#  turn it on for testing
 spring.h2.console:
   enabled: true
   path: /h2

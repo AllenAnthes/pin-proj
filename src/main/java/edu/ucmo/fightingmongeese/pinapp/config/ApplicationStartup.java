@@ -14,6 +14,9 @@ import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
 
+/**
+ * Component used to pre-seed the database for development purposes.
+ */
 @Component
 public class ApplicationStartup
         implements ApplicationListener<ApplicationReadyEvent> {

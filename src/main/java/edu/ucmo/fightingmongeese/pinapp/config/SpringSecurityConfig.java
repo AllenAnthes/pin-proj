@@ -6,14 +6,18 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
+
 @Configuration
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    /**
+     * Configures basic security for the testing/demo frontend.
+     *
+     * @param http
+     */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
         http.headers().frameOptions().sameOrigin();
-
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/api/**", "/test/**", "/h2", "/img**").permitAll()
@@ -29,7 +33,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll();
     }
 
-    // create two users, admin and user
+    /**
+     * Pre-seeds the in-memory authentication database with two users for testing
+     * purposes.
+     *
+     * @param auth
+     */
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 

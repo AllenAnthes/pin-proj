@@ -8,6 +8,16 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 
+/**
+ * Class used to model a PIN object and associated state.
+ * Spring handles translation between the Pin as JSON, a Java object,
+ * and as a row in the SQL database.
+ * <p>
+ * All field validation is annotated here and performed before the
+ * request arrives at the associated controller.
+ * Field validation error messages are stored in the configuration file
+ * located at src.main.resources.ValidationMessages.properties
+ */
 @Entity
 @Table(name = "pins")
 public class Pin {
@@ -79,6 +89,7 @@ public class Pin {
         this.claim_ip = claim_ip;
     }
 
+    // another test constructor
     public Pin(String account, String pin, String create_ip, String create_user, LocalDateTime create_timestamp, LocalDateTime expire_timestamp) {
         this.account = account;
         this.pin = pin;
@@ -88,6 +99,7 @@ public class Pin {
         this.expire_timestamp = expire_timestamp;
     }
 
+    // another one
     public Pin(String account, String create_user) {
         this.account = account;
         this.create_user = create_user;

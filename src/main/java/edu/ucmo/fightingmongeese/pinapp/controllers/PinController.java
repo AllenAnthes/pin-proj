@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Primary controller for routing requests sent to API
+ * All endpoints are prepended by /api/
+ */
 @RestController
 @RequestMapping("/api")
 public class PinController {

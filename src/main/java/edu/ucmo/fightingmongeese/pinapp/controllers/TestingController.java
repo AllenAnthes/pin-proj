@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Controller for routing API calls to be used during development.
+ */
 @RestController
 @RequestMapping("/test")
 public class TestingController {
@@ -22,7 +25,10 @@ public class TestingController {
     @Autowired
     DateTime dateTime;
 
-
+    /**
+     * Method to simply query the pin database and return all pins
+     * currently stored.
+     */
     @PostMapping("/all")
     public List<Pin> all() {
         return pinRepository.findAll();

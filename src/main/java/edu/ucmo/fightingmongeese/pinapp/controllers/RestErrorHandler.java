@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Custom error handler to catch exceptions raised when a client passes in a PIN that fails
+ * field validation.
+ */
 @ControllerAdvice
 public class RestErrorHandler {
 
@@ -33,6 +37,15 @@ public class RestErrorHandler {
         sb = new StringBuilder();
     }
 
+    /**
+     * Error processing method.  Logs each validation error and returns DTO carrying error information
+     * to be sent to the client
+     *
+     * @param ex Exception thrown when field validation failed
+     * @return validationErrorDTO
+     * The DTO that will be returned to the user as JSON enumerating
+     * the field errors in their request
+     */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
@@ -46,7 +59,7 @@ public class RestErrorHandler {
     private ValidationErrorDTO processFieldErrors(List<FieldError> fieldErrors) {
         ValidationErrorDTO dto = new ValidationErrorDTO();
 
-        for (FieldError fieldError: fieldErrors) {
+        for (FieldError fieldError : fieldErrors) {
             String localizedErrorMessage = resolveLocalizedErrorMessage(fieldError);
             sb.append(" : ").append(localizedErrorMessage);
             dto.addFieldError(fieldError.getField(), localizedErrorMessage);

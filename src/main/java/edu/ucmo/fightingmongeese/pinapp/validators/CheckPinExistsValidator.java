@@ -8,7 +8,6 @@ import javax.validation.ConstraintValidatorContext;
 
 public class CheckPinExistsValidator implements ConstraintValidator<CheckPinExists, String> {
 
-
     private PinRepository pinRepository;
 
     @Autowired

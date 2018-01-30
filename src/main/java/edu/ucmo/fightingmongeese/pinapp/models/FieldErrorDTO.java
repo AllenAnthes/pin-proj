@@ -1,5 +1,9 @@
 package edu.ucmo.fightingmongeese.pinapp.models;
 
+/**
+ * Data Transfer Object representing a single field error to be processed
+ * by the RestErrorHandler
+ */
 public class FieldErrorDTO {
 
     private String field;
