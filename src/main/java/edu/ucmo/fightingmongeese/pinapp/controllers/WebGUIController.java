@@ -2,7 +2,6 @@ package edu.ucmo.fightingmongeese.pinapp.controllers;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.models.PinDTO;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
@@ -40,10 +39,14 @@ import java.util.Map;
 @Controller
 public class WebGUIController {
 
-    @Autowired
-    PinRepository pinRepository;
+    private final PinRepository pinRepository;
 
     private static final Logger logger = LoggerFactory.getLogger(PinController.class);
+
+    @Autowired
+    public WebGUIController(PinRepository pinRepository) {
+        this.pinRepository = pinRepository;
+    }
 
     /**
      * Method for displaying PINs currently in the database as a table.

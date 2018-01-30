@@ -24,9 +24,9 @@ import java.security.SecureRandom;
 @Service
 public class PinService {
 
-    private PinRepository pinRepository;
+    private final PinRepository pinRepository;
 
-    private DateTime dateTime;
+    private final DateTime dateTime;
 
     @Autowired
     public PinService(PinRepository pinRepository, DateTime dateTime) {

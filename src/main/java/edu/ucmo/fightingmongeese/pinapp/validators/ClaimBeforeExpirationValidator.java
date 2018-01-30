@@ -11,9 +11,9 @@ import javax.validation.ConstraintValidatorContext;
 public class ClaimBeforeExpirationValidator implements ConstraintValidator<ClaimBeforeExpiration, String> {
 
 
-    private DateTime dateTime;
+    private final DateTime dateTime;
 
-    private PinRepository pinRepository;
+    private final PinRepository pinRepository;
 
     @Autowired
     public ClaimBeforeExpirationValidator(DateTime dateTime, PinRepository pinRepository) {

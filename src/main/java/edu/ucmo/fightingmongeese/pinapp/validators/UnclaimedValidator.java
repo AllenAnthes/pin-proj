@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 
 public class UnclaimedValidator implements ConstraintValidator<Unclaimed, String> {
 
-    private PinRepository pinRepository;
+    private final PinRepository pinRepository;
 
     @Autowired
     public UnclaimedValidator(PinRepository pinRepository) {

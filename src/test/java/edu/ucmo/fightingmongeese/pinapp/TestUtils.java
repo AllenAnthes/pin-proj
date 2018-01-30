@@ -11,7 +11,7 @@ class TestUtils {
 
     static final LocalDateTime mockedTime = LocalDateTime.ofEpochSecond(10000, 0, ZoneOffset.UTC);
 
-    private static String IPV4_LOCALHOST = "127.0.0.1";
+    private static final String IPV4_LOCALHOST = "127.0.0.1";
 
 
 

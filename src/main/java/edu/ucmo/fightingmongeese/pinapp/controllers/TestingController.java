@@ -19,11 +19,15 @@ import java.util.List;
 @RequestMapping("/test")
 public class TestingController {
 
-    @Autowired
-    PinRepository pinRepository;
+    private final PinRepository pinRepository;
+
+    private final DateTime dateTime;
 
     @Autowired
-    DateTime dateTime;
+    public TestingController(PinRepository pinRepository, DateTime dateTime) {
+        this.pinRepository = pinRepository;
+        this.dateTime = dateTime;
+    }
 
     /**
      * Method to simply query the pin database and return all pins

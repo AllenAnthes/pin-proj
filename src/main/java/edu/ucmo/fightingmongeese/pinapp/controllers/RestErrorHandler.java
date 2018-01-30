@@ -27,7 +27,7 @@ public class RestErrorHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(RestErrorHandler.class);
 
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
     private StringBuilder sb;
 

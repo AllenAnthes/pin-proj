@@ -6,10 +6,8 @@ import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationPreparedEvent;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
@@ -23,7 +21,7 @@ public class ApplicationStartup
 
     private final PinRepository pinRepository;
 
-    private DateTime dateTime;
+    private final DateTime dateTime;
 
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicationStartup.class);

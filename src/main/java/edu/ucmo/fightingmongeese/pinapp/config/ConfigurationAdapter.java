@@ -8,7 +8,7 @@ import org.springframework.web.servlet.config.annotation.*;
 @EnableWebMvc
 public class ConfigurationAdapter extends WebMvcConfigurerAdapter {
 
-    private RequestInterceptor requestInterceptor;
+    private final RequestInterceptor requestInterceptor;
 
     @Autowired
     public ConfigurationAdapter(RequestInterceptor requestInterceptor) {

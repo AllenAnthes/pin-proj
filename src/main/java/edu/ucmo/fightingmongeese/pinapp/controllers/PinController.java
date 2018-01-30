@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/api")
 public class PinController {
 
-    private PinService pinService;
+    private final PinService pinService;
 
     @Autowired
     public PinController(PinService pinService) {

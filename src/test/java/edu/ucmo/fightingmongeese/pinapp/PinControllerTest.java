@@ -39,6 +39,7 @@ public class PinControllerTest {
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
+        pinController = new PinController(pinService);
     }
 
 
