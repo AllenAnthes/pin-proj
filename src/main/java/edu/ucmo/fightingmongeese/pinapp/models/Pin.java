@@ -5,8 +5,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+
+import java.util.regex.Pattern;
 
 /**
  * Class used to model a PIN object and associated state.
@@ -21,6 +22,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "pins")
 public class Pin {
+
+    private static final int SIZE_OF_RAW_PIN = 6;
+    private static final int SIZE_OF_CHECKED_PIN = SIZE_OF_RAW_PIN + 1;
+    public static final java.util.regex.Pattern pattern = Pattern.compile("\\p{N}{" + SIZE_OF_CHECKED_PIN + "}");
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -38,8 +44,9 @@ public class Pin {
     @CheckPinExists(groups = {Claim.class, Cancel.class})
     @ClaimBeforeExpiration(groups = Claim.class)
     @Unclaimed(groups = Claim.class)
-    @Pattern(regexp = "\\p{N}+", message = "PIN must be numeric")
-    @Column(name = "pin", nullable = false, length = 6, unique = true)
+    @CorrectPinFormat
+    @Mod10Valid(groups = Claim.class)
+    @Column(name = "pin", nullable = false, length = 7, unique = true)
     private String pin;
 
     @Column(name = "create_ip", nullable = false)
@@ -103,6 +110,30 @@ public class Pin {
     public Pin(String account, String create_user) {
         this.account = account;
         this.create_user = create_user;
+    }
+
+    public static boolean correctPinFormat(String pinString) {
+        return pattern.matcher(pinString).matches();
+    }
+
+    public static String getPinWithChecksum(String pinString) {
+
+        int checkSumDigit = getLuhnSum(pinString) * 9 % 10;
+        return pinString + checkSumDigit;
+    }
+
+    private static int getLuhnSum(String pinString) {
+        int[] multiplier = {SIZE_OF_RAW_PIN % 2 == 0 ? 2 : 1}; // Allows for easier refactoring to larger PINs
+        return pinString.chars()
+                .map(i -> i - '0')  // convert ASCII value to int
+                .map(n -> n * (multiplier[0] = multiplier[0] == 1 ? 2 : 1)) // alternate multiplier
+                .map(n -> n > 9 ? n - 9 : n)    // adds digits of two digit numbers
+                .sum();
+    }
+
+    public static boolean isValidLuhn(String pinString) {
+        return getLuhnSum(pinString) % 10 == 0;
+
     }
 
     public Integer getOid() {

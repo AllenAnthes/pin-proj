@@ -38,30 +38,25 @@ public class ApplicationStartup
      */
     @Override
     public void onApplicationEvent(final ApplicationReadyEvent event) {
-
-        SecureRandom random = new SecureRandom();
-
-        random.setSeed("totessecure".getBytes());
-
         Pin pin = new Pin("BobsChecking", "192.168.0.22", "bob");
-        int randomPin = random.nextInt(1000000);
-        String pinString = String.format("%06d", randomPin);
+        int num = 117;
+        String pinString = String.format("%07d", num);
         pin.setPin(pinString);
         pin.setCreate_timestamp(dateTime.now());
         pin.setExpire_timestamp(dateTime.now().plusMinutes(30));
         pinRepository.save(pin);
 
         pin = new Pin("BobsSavings", "192.168.0.35", "bob");
-        int num = 1234;
-        pinString = String.format("%06d", num);
+        num = 1234566;
+        pinString = String.format("%07d", num);
         pin.setPin(pinString);
         pin.setCreate_timestamp(dateTime.now());
         pin.setExpire_timestamp(dateTime.now().plusMinutes(30));
         pinRepository.save(pin);
 
         pin = new Pin("SallysSavings", "192.168.0.35", "sally");
-        randomPin = random.nextInt(1000000);
-        pinString = String.format("%06d", randomPin);
+        num = 6543219;
+        pinString = String.format("%07d", num);
         pin.setPin(pinString);
         pin.setCreate_timestamp(dateTime.now());
         pin.setExpire_timestamp(dateTime.now().plusMinutes(30));

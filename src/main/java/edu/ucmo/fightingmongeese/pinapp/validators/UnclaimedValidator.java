@@ -22,9 +22,9 @@ public class UnclaimedValidator implements ConstraintValidator<Unclaimed, String
     public boolean isValid(String claimPin, ConstraintValidatorContext context) {
 
 
-        if (claimPin == null) {
+        if (claimPin == null || !Pin.correctPinFormat(claimPin))
             return true;
-        }
+
         Pin pin = pinRepository.findByPin(claimPin).orElse(null);
         return pin == null || pin.getClaim_user() == null;
     }

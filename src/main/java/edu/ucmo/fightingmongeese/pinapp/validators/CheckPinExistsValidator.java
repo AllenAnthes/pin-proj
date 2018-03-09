@@ -1,10 +1,12 @@
 package edu.ucmo.fightingmongeese.pinapp.validators;
 
+import edu.ucmo.fightingmongeese.pinapp.models.Pin;
 import edu.ucmo.fightingmongeese.pinapp.repository.PinRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+
 
 public class CheckPinExistsValidator implements ConstraintValidator<CheckPinExists, String> {
 
@@ -19,7 +21,8 @@ public class CheckPinExistsValidator implements ConstraintValidator<CheckPinExis
     }
 
     public boolean isValid(String pin, ConstraintValidatorContext context) {
-        return pinRepository.findByPin(pin).isPresent();
+        // We short circuit here so we  don't query the repo if pin format is invalid
+        return pin == null || !Pin.correctPinFormat(pin) || pinRepository.findByPin(pin).isPresent();
     }
 
 }
