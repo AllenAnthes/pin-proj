@@ -25,7 +25,7 @@ public class ClaimBeforeExpirationValidator implements ConstraintValidator<Claim
     }
 
     public boolean isValid(String pin, ConstraintValidatorContext context) {
-        if (pin == null || !Pin.correctPinFormat(pin))
+        if (pin == null || !Pin.correctPinFormat(pin) || !Pin.isValidLuhn(pin))
             return true;
 
         Pin repoPin = pinRepository.findByPin(pin).orElse(null);

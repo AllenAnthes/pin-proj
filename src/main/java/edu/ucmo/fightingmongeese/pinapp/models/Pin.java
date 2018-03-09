@@ -46,7 +46,7 @@ public class Pin {
     @Unclaimed(groups = Claim.class)
     @CorrectPinFormat
     @Mod10Valid(groups = Claim.class)
-    @Column(name = "pin", nullable = false, length = 7, unique = true)
+    @Column(name = "pin", nullable = false, length = SIZE_OF_CHECKED_PIN, unique = true)
     private String pin;
 
     @Column(name = "create_ip", nullable = false)

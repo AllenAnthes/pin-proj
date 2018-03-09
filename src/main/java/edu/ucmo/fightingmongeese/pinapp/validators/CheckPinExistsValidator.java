@@ -22,7 +22,11 @@ public class CheckPinExistsValidator implements ConstraintValidator<CheckPinExis
 
     public boolean isValid(String pin, ConstraintValidatorContext context) {
         // We short circuit here so we  don't query the repo if pin format is invalid
-        return pin == null || !Pin.correctPinFormat(pin) || pinRepository.findByPin(pin).isPresent();
+        if (pin == null || !Pin.correctPinFormat(pin) || !Pin.isValidLuhn(pin)) {
+            return true;
+        }
+
+        return pinRepository.findByPin(pin).isPresent();
     }
 
 }
