@@ -27,7 +27,6 @@ public class Pin {
     private static final int SIZE_OF_CHECKED_PIN = SIZE_OF_RAW_PIN + 1;
     public static final java.util.regex.Pattern pattern = Pattern.compile("\\p{N}{" + SIZE_OF_CHECKED_PIN + "}");
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer oid;
@@ -47,7 +46,6 @@ public class Pin {
     @Column(name = "create_user", nullable = false)
     private String create_user;
 
-
     @Column(name = "create_timestamp", updatable = false)
     private LocalDateTime create_timestamp;
 
@@ -56,7 +54,6 @@ public class Pin {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ExpireTime(groups = Add.class)
     private LocalDateTime expire_timestamp;
-
 
     @Column(name = "claim_timestamp")
     private LocalDateTime claim_timestamp;

@@ -20,8 +20,6 @@ public class UnclaimedValidator implements ConstraintValidator<Unclaimed, String
     }
 
     public boolean isValid(String claimPin, ConstraintValidatorContext context) {
-
-
         if (claimPin == null || !Pin.correctPinFormat(claimPin) || !Pin.isValidLuhn(claimPin))
             return true;
 

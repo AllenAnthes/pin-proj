@@ -31,12 +31,11 @@ public class PinService {
 
     private final SecureRandom random;
 
-
     @Autowired
     public PinService(PinRepository pinRepository, DateTime dateTime) {
         this.pinRepository = pinRepository;
         this.dateTime = dateTime;
-        this.random =  new SecureRandom();
+        this.random = new SecureRandom();
         // TODO: !! DON'T LET THIS GO TO PROD WITH THE SEED !!
         random.setSeed("totessecure".getBytes());
 
@@ -56,7 +55,6 @@ public class PinService {
             int randomPin = random.nextInt(1000000);
             pinString = String.format("%06d", randomPin);
             pinString = Pin.getPinWithChecksum(pinString);
-//            pinString = getChecksum(pinString);
             notUnique = pinRepository.findByPin(pinString).isPresent();
         } while (notUnique);
 
@@ -70,7 +68,6 @@ public class PinService {
         pin = this.pinRepository.save(pin);
         return pin;
     }
-
 
     /**
      * Method for handling claims sent to the REST API.

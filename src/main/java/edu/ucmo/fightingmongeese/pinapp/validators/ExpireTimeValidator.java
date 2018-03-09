@@ -20,7 +20,6 @@ public class ExpireTimeValidator implements ConstraintValidator<ExpireTime, Loca
     public ExpireTimeValidator() {
     }
 
-
     public void initialize(ExpireTime constraint) {
     }
 
