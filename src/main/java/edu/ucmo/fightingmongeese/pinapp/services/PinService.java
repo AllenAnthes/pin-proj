@@ -71,51 +71,6 @@ public class PinService {
         return pin;
     }
 
-//    private String getChecksum(String pinString) {
-//        int sum = getSum(pinString);
-//        int checksumDigit = (sum * 9) % 10;
-//        String result = pinString + checksumDigit;
-//        return result;
-//    }
-//
-//    public static int getSum(String pinString) {
-////        int[] multiplier = {pinString.length() % 2 == 0 ? 2 : 1};
-//        int[] multiplier ={2};
-//        int sum = pinString.chars()
-//                .limit(6)
-//                .map(i -> i - '0')
-//                .map(n -> n * (multiplier[0] = multiplier[0] == 1 ? 2 : 1))
-//                .map(n -> n > 9 ? n - 9 : n)
-//                .sum();
-//
-//        // 7 2 6 8 2 3
-////        int[] otherMultiplier = {pinString.length() % 2 == 0 ? 2 : 1};
-//        int[] otherMultiplier ={2};
-//        Integer[] thing = pinString.chars()
-//                .limit(6)
-//                .map(i -> i - '0')
-//                .map(n -> n * (otherMultiplier[0] = otherMultiplier[0] == 1 ? 2 : 1))
-//                .map(n -> n > 9 ? n - 9 : n)
-//                .boxed()
-//                .toArray(Integer[]::new);
-//        return sum;
-//    }
-//
-//    public static int newGetSum(String pinString) {
-//        StringBuilder sb = new StringBuilder(pinString);
-//        int sum = 0;
-//        for (int i = 0; i < sb.length(); i++) {
-//            int nextDigit = Integer.parseInt(sb.substring(i, i + 1));
-//            if (i % 2 == 1) {
-//                nextDigit *= 2;
-//                if (nextDigit > 9) {
-//                    nextDigit -= 9;
-//                }
-//            }
-//            sum += nextDigit;
-//        }
-//        return sum;
-//    }
 
     /**
      * Method for handling claims sent to the REST API.
