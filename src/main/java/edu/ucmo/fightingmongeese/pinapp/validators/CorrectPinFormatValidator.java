@@ -10,7 +10,6 @@ public class CorrectPinFormatValidator implements ConstraintValidator<CorrectPin
     }
 
     public boolean isValid(String pinString, ConstraintValidatorContext context) {
-        return Pin.correctPinFormat(pinString);
+        return pinString != null && Pin.correctPinFormat(pinString);
     }
-
 }

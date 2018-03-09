@@ -11,7 +11,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CreateUserRequiredValidator.class)
 public @interface CreateUserRequired {
-
     String message() default "{edu.ucmo.fightingmongeese.defaultCreateUserRequiredMessage}";
 
     Class<?>[] groups() default {};

@@ -68,6 +68,8 @@ public class RequestValidationIntegrationTests {
     String claimBeforeExpiration;
     @Value("${edu.ucmo.fightingmongeese.defaultExpireTimeMessage}")
     String expireTime;
+    @Value("${edu.ucmo.fightingmongeese.defaultCorrectPinFormatMessage}")
+    String pinFormat;
 
 
     private MockMvc mockMVc;
@@ -170,7 +172,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = getClaimPin();
         pin.setPin(null);
 
-        performRequest(pin, "/api/claim", containsInAnyOrder(pinRequired));
+        performRequest(pin, "/api/claim", containsInAnyOrder(pinRequired, pinFormat ));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);
@@ -207,7 +209,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = getClaimPin();
         pin.setPin(null);
 
-        performRequest(pin, "/api/cancel", containsInAnyOrder(pinRequired));
+        performRequest(pin, "/api/cancel", containsInAnyOrder(pinRequired, pinFormat));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);

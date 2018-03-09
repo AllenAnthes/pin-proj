@@ -32,20 +32,11 @@ public class Pin {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer oid;
 
-    @NotNull(groups = Add.class,
-            message = "{edu.ucmo.fightingmongeese.defaultAccountRequiredMessage}")
+    @AccountValidators(groups = Add.class)
     @Column(name = "account", nullable = false)
-    @SingleActivePin(groups = Add.class)
-    @AccountFormat(groups = Add.class)
     private String account;
 
-    @NotNull(groups = {Claim.class, Cancel.class},
-            message = "{edu.ucmo.fightingmongeese.defaultPINRequiredMessage}")
-    @CheckPinExists(groups = {Claim.class, Cancel.class})
-    @ClaimBeforeExpiration(groups = Claim.class)
-    @Unclaimed(groups = Claim.class)
-    @CorrectPinFormat
-    @Mod10Valid(groups = Claim.class)
+    @PinValidators(groups = {Claim.class, Cancel.class})
     @Column(name = "pin", nullable = false, length = SIZE_OF_CHECKED_PIN, unique = true)
     private String pin;
 
