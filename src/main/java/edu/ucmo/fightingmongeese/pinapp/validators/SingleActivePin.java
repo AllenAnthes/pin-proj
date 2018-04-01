@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = SingleActivePinValidator.class)
 public @interface SingleActivePin {
-    String message() default "{edu.ucmo.fightingmongeese.defaultSingleActivePinMessage}";
+    String message() default "{edu.ucmo.fightingmongeese.pinapp.validators.SingleActivePin.description}";
 
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};

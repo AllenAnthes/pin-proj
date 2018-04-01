@@ -23,8 +23,7 @@ spring.jpa:
   hibernate.ddl-auto: create-drop
   show-sql: false
 
-
-#spring.data.rest.base-path: /api
+spring.jackson.deserialization.FAIL_ON_UNKNOWN_PROPERTIES: true
 
 #  Setting appears to be  required so that hibernate validator
 #  bean can be properly injected at runtime.

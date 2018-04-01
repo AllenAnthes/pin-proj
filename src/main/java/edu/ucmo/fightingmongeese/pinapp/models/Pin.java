@@ -1,5 +1,6 @@
 package edu.ucmo.fightingmongeese.pinapp.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import edu.ucmo.fightingmongeese.pinapp.validators.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -21,6 +22,7 @@ import java.util.regex.Pattern;
  */
 @Entity
 @Table(name = "pins")
+@JsonIgnoreProperties
 public class Pin {
 
     private static final int SIZE_OF_RAW_PIN = 6;
@@ -31,11 +33,18 @@ public class Pin {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer oid;
 
-    @AccountValidators(groups = Add.class)
+    @AccountFormat(groups = Add.class)
+    @SingleActivePin(groups = Add.class)
+    @NotNull(groups = Add.class, message = "{edu.ucmo.fightingmongeese.pinapp.validators.AccountRequired.description}")
     @Column(name = "account", nullable = false)
     private String account;
 
-    @PinValidators(groups = {Claim.class, Cancel.class})
+    @NotNull(groups = {Claim.class, Cancel.class}, message = "{edu.ucmo.fightingmongeese.pinapp.validators.PINRequired.description}")
+    @CheckPinExists(groups = {Claim.class, Cancel.class})
+    @ClaimBeforeExpiration(groups = {Claim.class, Cancel.class})
+    @CorrectPinFormat(groups = {Claim.class, Cancel.class})
+    @Unclaimed(groups = {Claim.class, Cancel.class})
+    @Mod10Valid(groups = {Claim.class, Cancel.class})
     @Column(name = "pin", nullable = false, length = SIZE_OF_CHECKED_PIN, unique = true)
     private String pin;
 
@@ -59,7 +68,7 @@ public class Pin {
     private LocalDateTime claim_timestamp;
 
     @NotNull(groups = {Claim.class, Cancel.class},
-            message = "{edu.ucmo.fightingmongeese.defaultClaimUserRequiredMessage}")
+            message = "{edu.ucmo.fightingmongeese.ClaimUserRequired.description}")
     @Column(name = "claim_user")
     private String claim_user;
 

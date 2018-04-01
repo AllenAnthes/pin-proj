@@ -1,0 +1,126 @@
+= RESTful Notes API Guide
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 4
+:sectlinks:
+
+[[overview]]
+= Overview
+
+This is the overview
+
+[[overview-http-verbs]]
+== HTTP verbs
+
+This RESTful API tries to adhere as closely as possible to standard HTTP and REST conventions in its use of HTTP verbs.
+
+
+|===
+| Verb | Usage
+
+
+| `POST`
+| Used to create a new resource
+|===
+
+This RESTful API tries to adhere as closely as possible to standard
+HTTP and REST conventions in its use of HTTP status codes.
+|===
+| Status code | Usage
+
+| `200 OK`
+| The request completed successfully
+
+| `201 Created`
+| A new resource has been created successfully. The resource's URI is available from the response's
+`Location` header
+
+
+| `400 Bad Request`
+| The request was malformed. The response body will include an error providing further information
+
+| `404 Not Found`
+| The requested resource did not exist
+|===
+
+[[resources]]
+= Resources
+
+
+[[resources-rest]]
+== Pin REST Service
+
+All endpoints must be in the form of a `POST` request.
+
+[[resources-rest-new]]
+=== /api/new
+
+
+==== Request Payload
+include::{snippets}/add/request-fields.adoc[]
+
+==== Response Payload
+include::{snippets}/add/response-fields.adoc[]
+
+
+==== Example cURL command
+include::{snippets}/add/curl-request.adoc[]
+
+
+==== Example HTTP Request
+include::{snippets}/add/http-request.adoc[]
+
+==== Example HTTP Response
+
+include::{snippets}/add/http-response.adoc[]
+
+
+
+[[resources-rest-claim]]
+=== /api/claim
+
+
+==== Request Payload
+include::{snippets}/claim/request-fields.adoc[]
+
+==== Response Payload
+include::{snippets}/claim/response-fields.adoc[]
+
+
+==== Example cURL command
+include::{snippets}/claim/curl-request.adoc[]
+
+
+==== Example HTTP Request
+include::{snippets}/claim/http-request.adoc[]
+
+==== Example HTTP Response
+
+include::{snippets}/claim/http-response.adoc[]
+
+
+[[resources-rest-cancel]]
+=== /api/cancel
+
+
+==== Request Payload
+include::{snippets}/cancel/request-fields.adoc[]
+
+==== Response Payload
+include::{snippets}/cancel/response-fields.adoc[]
+
+
+==== Example cURL command
+include::{snippets}/cancel/curl-request.adoc[]
+
+
+==== Example HTTP Request
+include::{snippets}/cancel/http-request.adoc[]
+
+==== Example HTTP Response
+
+include::{snippets}/cancel/http-response.adoc[]
+
+

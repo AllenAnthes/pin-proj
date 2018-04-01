@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = AccountFormatValidator.class)
 public @interface AccountFormat {
 
-    String message() default "{edu.ucmo.fightingmongeese.defaultAccountFormatMessage}";
+    String message() default "{edu.ucmo.fightingmongeese.pinapp.validators.AccountFormat.description}";
 
     Class<?>[] groups() default {};
 

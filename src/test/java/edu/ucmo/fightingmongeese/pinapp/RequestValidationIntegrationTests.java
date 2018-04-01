@@ -48,27 +48,27 @@ public class RequestValidationIntegrationTests {
     /**
      * Field Validation Error Messages
      */
-    @Value("${edu.ucmo.fightingmongeese.defaultPINRequiredMessage}")
+    @Value("${edu.ucmo.fightingmongeese.pinapp.validators.PINRequired.description}")
     String pinRequired;
-    @Value("${edu.ucmo.fightingmongeese.defaultUnclaimedMessage}")
+    @Value("${edu.ucmo.fightingmongeese.pinapp.validators.Unclaimed.description}")
     String unclaimed;
-    @Value("${edu.ucmo.fightingmongeese.defaultCheckPinExistsMessage}")
+    @Value("${edu.ucmo.fightingmongeese.pinapp.validators.CheckPinExists.description}")
     String checkPinExists;
-    @Value("${edu.ucmo.fightingmongeese.defaultAccountFormatMessage}")
+    @Value("${edu.ucmo.fightingmongeese.pinapp.validators.AccountFormat.description}")
     String accountFormat;
-    @Value("${edu.ucmo.fightingmongeese.defaultSingleActivePinMessage}")
+    @Value("${edu.ucmo.fightingmongeese.pinapp.validators.SingleActivePin.description}")
     String singleActivePin;
-    @Value("${edu.ucmo.fightingmongeese.defaultAccountRequiredMessage}")
+    @Value("${edu.ucmo.fightingmongeese.pinapp.validators.AccountRequired.description}")
     String accountRequired;
-    @Value("${edu.ucmo.fightingmongeese.defaultCreateUserRequiredMessage}")
+    @Value("${edu.ucmo.fightingmongeese.pinapp.validators.CreateUserRequired.description}")
     String createUserRequired;
-    @Value("${edu.ucmo.fightingmongeese.defaultClaimUserRequiredMessage}")
+    @Value("${edu.ucmo.fightingmongeese.ClaimUserRequired.description}")
     String claimUserRequired;
-    @Value("${edu.ucmo.fightingmongeese.defaultClaimBeforeExpirationMessage}")
+    @Value("${edu.ucmo.fightingmongeese.ClaimBeforeExpiration.description}")
     String claimBeforeExpiration;
-    @Value("${edu.ucmo.fightingmongeese.defaultExpireTimeMessage}")
+    @Value("${edu.ucmo.fightingmongeese.ExpireTime.description}")
     String expireTime;
-    @Value("${edu.ucmo.fightingmongeese.defaultCorrectPinFormatMessage}")
+    @Value("${edu.ucmo.fightingmongeese.pinapp.validators.CorrectPinFormat.description}")
     String pinFormat;
 
 
@@ -172,7 +172,7 @@ public class RequestValidationIntegrationTests {
         Pin pin = getClaimPin();
         pin.setPin(null);
 
-        performRequest(pin, "/api/claim", containsInAnyOrder(pinRequired, pinFormat ));
+        performRequest(pin, "/api/claim", containsInAnyOrder(pinRequired, pinFormat));
 
         verifyZeroInteractions(pinService);
         verifyZeroInteractions(pinController);

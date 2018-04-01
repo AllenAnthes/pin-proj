@@ -12,7 +12,7 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = Mod10ValidValidator.class)
 public @interface Mod10Valid {
 
-    String message() default "{edu.ucmo.fightingmongeese.defaultMod10InvalidMessage}";
+    String message() default "{edu.ucmo.fightingmongeese.pinapp.validators.Mod10Valid.description}";
 
     Class<?>[] groups() default {};
 

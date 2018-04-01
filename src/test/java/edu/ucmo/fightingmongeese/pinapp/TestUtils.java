@@ -14,13 +14,21 @@ class TestUtils {
     private static final String IPV4_LOCALHOST = "127.0.0.1";
 
 
-
     static Pin getCompletePin() {
         Pin pin = new Pin("testAccount", "127.0.0.1", "testCreateUser");
         pin.setPin("1234566");
         pin.setExpire_timestamp(LocalDateTime.MAX);
         pin.setClaim_user("testClaimUser");
         pin.setClaim_ip("127.0.0.1");
+        return pin;
+    }
+
+    static Pin getAddDBResponse() {
+        Pin pin = new Pin("someAccount", "127.0.0.1", "someUser");
+        pin.setPin("1234566");
+        pin.setOid(1);
+        pin.setCreate_timestamp(mockedTime);
+        pin.setExpire_timestamp(mockedTime.plusDays(2));
         return pin;
     }
 
@@ -33,7 +41,7 @@ class TestUtils {
 
 
     static Pin getNewPin() {
-        return new Pin("testAccount", IPV4_LOCALHOST, "testCreateUser");
+        return new Pin("someAccount", IPV4_LOCALHOST, "someUser");
     }
 
     static Pin getCancelPin() {
@@ -48,7 +56,31 @@ class TestUtils {
         pin.setClaim_ip(IPV4_LOCALHOST);
         pin.setPin("1234566");
         pin.setClaim_user("testClaimUser");
-//        pin.setExpire_timestamp(mockedTime.plusHours(5));
+        return pin;
+    }
+
+
+    static Pin getClaimRequestPin() {
+        Pin pin = getNewPin();
+        pin.setPin("1234566");
+        pin.setCreate_user("someUser");
+        pin.setAccount("someAccount");
+        pin.setCreate_timestamp(mockedTime);
+        pin.setExpire_timestamp(LocalDateTime.MAX);
+        return pin;
+    }
+
+    static Pin getClaimResponsePin() {
+        Pin pin = getNewPin();
+        pin.setOid(1);
+        pin.setPin("1234566");
+        pin.setCreate_user("someUser");
+        pin.setAccount("someAccount");
+        pin.setCreate_timestamp(mockedTime);
+        pin.setClaim_user("someClaimUser");
+        pin.setClaim_timestamp(mockedTime.plusDays(1));
+        pin.setClaim_ip(IPV4_LOCALHOST);
+        pin.setExpire_timestamp(mockedTime.plusDays(2));
         return pin;
     }
 

@@ -12,10 +12,9 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = CheckPinExistsValidator.class)
 public @interface CheckPinExists {
 
-    String message() default "{edu.ucmo.fightingmongeese.defaultCheckPinExistsMessage}";
+    String message() default "{edu.ucmo.fightingmongeese.pinapp.validators.CheckPinExists.description}";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 }
-

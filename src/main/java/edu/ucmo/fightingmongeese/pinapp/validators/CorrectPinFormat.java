@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = CorrectPinFormatValidator.class)
 public @interface CorrectPinFormat {
-    String message() default "{edu.ucmo.fightingmongeese.defaultCorrectPinFormatMessage}";
+    String message() default "{edu.ucmo.fightingmongeese.pinapp.validators.CorrectPinFormat.description}";
 
     Class<?>[] groups() default {};
 
