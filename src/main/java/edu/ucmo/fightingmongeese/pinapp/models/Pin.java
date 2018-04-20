@@ -58,7 +58,6 @@ public class Pin {
     @Column(name = "create_timestamp", updatable = false)
     private LocalDateTime create_timestamp;
 
-
     @Column(name = "expire_timestamp")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @ExpireTime(groups = Add.class)
@@ -113,24 +112,45 @@ public class Pin {
         return pattern.matcher(pinString).matches();
     }
 
+    /**
+     * Utility method for computing Luhn checksum digit and appending it
+     * to provided pin
+     *
+     * @param pinString PIN to append checksum digit to
+     */
     public static String getPinWithChecksum(String pinString) {
-
         int checkSumDigit = getLuhnSum(pinString) * 9 % 10;
         return pinString + checkSumDigit;
     }
 
-    private static int getLuhnSum(String pinString) {
-        int[] multiplier = {SIZE_OF_RAW_PIN % 2 == 0 ? 2 : 1}; // Allows for easier refactoring to larger PINs
-        return pinString.chars()
-                .map(i -> i - '0')  // convert ASCII value to int
-                .map(n -> n * (multiplier[0] = multiplier[0] == 1 ? 2 : 1)) // alternate multiplier
-                .map(n -> n > 9 ? n - 9 : n)    // adds digits of two digit numbers
-                .sum();
-    }
-
+    /**
+     * Utility method for verifying valid Luhn checksum value
+     *
+     * @param pinString String with checksum digit to be checked
+     */
     public static boolean isValidLuhn(String pinString) {
         return getLuhnSum(pinString) % 10 == 0;
 
+    }
+
+    /**
+     * Utility method for computing Luhn sum.
+     * <p>
+     * Converts the string to a stream of characters,
+     * converts each numerical ASCII value to a standard integer,
+     * starting from the rightmost digit multiplies every other digit,
+     * if digit becomes two digits after previous step it is mapped to the sum of its two digits,
+     * sum is calculated and returned
+     *
+     * @param pinString Pin with digits to be summed
+     */
+    private static int getLuhnSum(String pinString) {
+        int[] multiplier = {SIZE_OF_RAW_PIN % 2 == 0 ? 2 : 1}; // Allows for easier refactoring to different PIN sizes
+        return pinString.chars()
+                .map(i -> i - '0')
+                .map(n -> n * (multiplier[0] = multiplier[0] == 1 ? 2 : 1))
+                .map(n -> n > 9 ? n - 9 : n)
+                .sum();
     }
 
     public Integer getOid() {

@@ -45,8 +45,8 @@ public class PinController {
     @ResponseStatus(HttpStatus.CREATED)
     public Pin add(@Validated(Pin.Add.class) @RequestBody Pin pin, HttpServletRequest request) {
 
-        logger.info("New PIN received from User: {} at {} -- Account: {} | PIN: {}",
-                pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount(), pin.getPin());
+        logger.info("New PIN received from User: {} at {} -- Account: {}",
+                pin.getCreate_user(), request.getRemoteAddr(), pin.getAccount());
         pin.setCreate_ip(request.getRemoteAddr());
         Pin result = pinService.add(pin);
         logger.info("New PIN successfully saved: Account: {} | PIN: {} | IP: {}", result.getAccount(), result.getPin(), request.getRemoteAddr());

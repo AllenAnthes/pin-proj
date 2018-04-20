@@ -74,6 +74,7 @@ public class PinService {
      *
      * @param claimPin PIN sent from the client to be claimed.
      */
+
     public Pin claim(Pin claimPin) {
         Pin pin = pinRepository.findByPin(claimPin.getPin()).orElse(new Pin());
         pin.setClaim_user(claimPin.getClaim_user());
